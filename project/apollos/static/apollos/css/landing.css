@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -12,9 +15,106 @@ header {
     padding: 10px 0;
 }
 
-main {
-    margin: 20px;
+main1 {
+    position: relative;
+    display: block;
+    height: 900px; /* Adjust as needed */
+    background-color: #FDFEFF;
+    padding: 10px;
+    padding-top: 30px;
+    padding-left: 20px;
 }
+
+/* Logo styling */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 60px; /* Adjust the size of the logo */
+    width: auto;
+    margin-right: 10px;
+}
+
+.logo p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+
+/* Container for buttons */
+.landing-button-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding-top: 30px;
+    padding-right: 20px;
+}
+
+/* Styling for buttons */
+.landing-button-container button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.landing-button-container .login-btn {
+    background-color: #758CAC;
+    border: 2px solid #758CAC;
+    height: 40px;
+    width: 69px;
+    color: white;
+    border-radius: 6px;
+    font-family: Poppins;
+    font-size: 14px;
+}
+
+.landing-button-container .register-btn {
+    background-color: #ffffff;
+    border: 2px solid #758CAC;
+    height: 40px;
+    width: 88px;
+    color: rgb(0, 0, 0);
+    border-radius: 6px;
+    font-family: Poppins;
+    font-size: 14px;
+}
+
+/* Button hover effects */
+.landing-button-container button:hover {
+    opacity: 0.8;
+    
+}
+
+.left-aligned {
+    text-align: left;
+    font-family: Poppins;
+    font-weight: bold;
+    font-size: 36px;
+    padding-left: 70px;
+}
+
+.black-text {
+    color: #222222;
+}
+
+.blue-text {
+    color: #4E739C;
+}
+
+.landing-text {
+    text-align: left;
+    font-family: Poppins;
+    font-size: 20px;
+    padding-left: 70px;
+    color: #3C3C3C;
+}
+
 
 footer {
     background-color: #333;
@@ -23,4 +123,105 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+
+
+
+/* Responsive styles */
+@media only screen and (max-width: 1200px) {
+    /* For tablets and smaller screens */
+    .logo p {
+        font-size: 18px;
+    }
+
+    .landing-button-container {
+        top: 10px;
+        right: 10px;
+        padding-top: 20px;
+        padding-right: 15px;
+    }
+
+    .landing-button-container button {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .left-aligned {
+        font-size: 32px;
+        padding-left: 50px;
+    }
+
+    .landing-text {
+        font-size: 18px;
+        padding-left: 50px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile devices */
+    body {
+        text-align: left;
+        padding: 10px;
+    }
+
+    .logo {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .logo p {
+        font-size: 16px;
+    }
+
+    .landing-button-container {
+        position: relative;
+        padding-top: 20px;
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .landing-button-container button {
+        font-size: 14px;
+        padding: 10px 20px;
+        width: 100%; /* Buttons take full width on mobile */
+        margin-bottom: 10px;
+    }
+
+    .left-aligned {
+        font-size: 28px;
+        padding-left: 20px;
+    }
+
+    .landing-text {
+        font-size: 16px;
+        padding-left: 20px;
+    }
+
+    footer {
+        position: relative;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    /* For very small screens like phones in portrait mode */
+    .left-aligned {
+        font-size: 24px;
+        padding-left: 10px;
+    }
+
+    .landing-text {
+        font-size: 14px;
+        padding-left: 10px;
+    }
+
+    .landing-button-container {
+        padding-top: 15px;
+    }
+
+    .landing-button-container button {
+        font-size: 14px;
+        padding: 10px;
+    }
 }

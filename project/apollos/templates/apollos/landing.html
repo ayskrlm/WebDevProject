@@ -8,14 +8,29 @@
     <link rel="stylesheet" href="{% static 'apollos/css/landing.css' %}">
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Django App</h1>
-    </header>
+    <main1>
+        <div class="logo">
+            <!-- Logo from static/img -->
+            <img src="{% static 'apollos/img/ApollosLogo.svg' %}" alt="Logo">
+        </div>
+        <div class="landing-button-container">
+            <button class="login-btn">Login</button>
+            <button class="register-btn">Register</button>
+        </div>
+        <p class="left-aligned">
+            <span class="black-text">Unlock a World of Knowledge:</span><br>
+            <span class="blue-text">Seamlessly Manage Your <br> Library with Ease!</span>
+        </p>
+        <p class="landing-text">
+            <span>Apollo's is a cutting-edge library management <br> system designed to streamline library operations.</span>
+        </p>        
+
+
+
+    </main1>
     <main>
         <p>This is the landing page of the application.</p>
     </main>
-    <footer>
-        <p>&copy; 2024 My Django App</p>
-    </footer>
+    
 </body>
 </html>

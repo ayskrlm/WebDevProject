@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APOLLO'S Registration</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'apollos/css/register.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'apollos/img/ApollosIcon.svg' %}">
+</head>
+<body>
+    <div class="logo">
+        <!-- Logo from static/img -->
+        <img src="{% static 'apollos/img/ApollosLogo.svg' %}" alt="Logo">
+    </div>
+
+    <div class="register-container">
+        <h2>Sign Up</h2>
+
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            <label for="first_name"></label>
+            <input type="text" id="first_name" name="first_name" placeholder="First Name" required><br>
+
+            <label for="last_name"></label>
+            <input type="text" id="last_name" name="last_name" placeholder="Last Name" required><br>
+
+            <label for="email"></label>
+            <input type="email" id="email" name="email" placeholder="Email" required><br>
+
+            <label for="password"></label>
+            <input type="password" id="password" name="password" placeholder="Password" required><br>
+
+            <!-- Send OTP button -->
+            <button type="button" id="send-otp-btn" onclick="sendOTP()">Send OTP</button>
+
+            <!-- Error message section (hidden initially) -->
+            <div id="error-message" style="color: red; display: none;"></div>
+            <div id="otp-message" style="color: rgb(0, 17, 255); display: none;"></div>
+
+            <!-- OTP input field (hidden initially) -->
+            <div id="otp-section" style="display: none;">
+                <label for="otp"></label>
+                <input type="text" id="otp" name="otp" placeholder="OTP" required><br>
+            </div>
+
+            <button type="submit" id="register-btn" style="display: none;">Register</button>
+
+            <!-- Already have an account? Login -->
+            <div id="login-link">
+                <span>Already have an account? <a href="{% url 'login' %}">Login</a></span>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // This function is triggered when the "Send OTP" button is clicked.
+        function sendOTP() {
+            var email = document.getElementById('email').value;
+            var errorMessageDiv = document.getElementById('error-message');
+            var otpMessageDiv = document.getElementById('otp-message');
+            errorMessageDiv.style.display = 'none';  // Hide previous error message
+
+            if (email) {
+                // AJAX request to send OTP
+                fetch("{% url 'send_otp' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'  // CSRF token for security
+                    },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show the OTP input field and the Register button
+                        document.getElementById('otp-section').style.display = 'block';
+                        document.getElementById('register-btn').style.display = 'block';
+                        otpMessageDiv.style.display = 'block';  // Show the success message
+                        otpMessageDiv.textContent = "OTP sent to your email. Please check your inbox.";
+                    } else {
+                        if (data.error === 'Email is already registered.') {
+                            errorMessageDiv.style.display = 'block';  // Show the error message
+                            errorMessageDiv.textContent = "This email is already registered. Please use a different email.";
+                        } else {
+                            errorMessageDiv.style.display = 'block';
+                            errorMessageDiv.textContent = "Failed to send OTP. Please try again.";
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorMessageDiv.style.display = 'block';
+                    errorMessageDiv.textContent = "An error occurred while sending the OTP.";
+                });
+            } else {
+                errorMessageDiv.style.display = 'block';
+                errorMessageDiv.textContent = "Please enter a valid email.";
+            }
+        }
+    </script>
+
+</body>
+</html>

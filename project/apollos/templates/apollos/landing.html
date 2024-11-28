@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo</title>
+    <title>APOLLO'S</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'apollos/css/landing.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'apollos/img/ApollosIcon.svg' %}">
@@ -16,8 +16,8 @@
             <img src="{% static 'apollos/img/ApollosLogo.svg' %}" alt="Logo">
         </div>
         <div class="landing-button-container">
-            <button class="login-btn">Login</button>
-            <button class="register-btn">Register</button>
+            <a href="{% url 'login' %}"><button class="login-btn">Login</button></a>
+            <a href="{% url 'register' %}"><button class="register-btn">Register</button></a>
         </div>
         
         <div class="front">
@@ -41,9 +41,49 @@
               
 
     </main1>
-    <main>
-        <p>This is the landing page of the application.</p>
-    </main>
-    
+    <main2>
+        <p class="quick-start"><br><br>
+            <span class="quick-text">QUICK START</span>
+            <br><br><br>
+            <span class="learn">Learn how to navigate APOLLO’S</span><br><br><br>
+        </p>   
+        <div class="quick-start-container">
+            <div class="quick-start-card">
+                <img src="{% static 'apollos/img/QuickStart1.svg' %}" alt="QuickStart1"><br><br>
+                <span class="QuickStart">1. Explore Catalogue</span><br><br><br>
+                <span class="QuickStart2">Explore all catalogue because we have many interesting material </span>
+            </div>
+            <div class="quick-start-card">
+                <img src="{% static 'apollos/img/QuickStart2.svg' %}" alt="QuickStart2"><br><br>
+                <span class="QuickStart">2. Choose Material</span><br><br><br>
+                <span class="QuickStart2">Select the material you would like to borrow or reserve</span>
+            </div>
+            <div class="quick-start-card">
+                <img src="{% static 'apollos/img/QuickStart3.svg' %}" alt="QuickStart3"><br><br>
+                <span class="QuickStart">3. Book Appointment</span><br><br><br>
+                <span class="QuickStart2">Select the date you would like to pick up the chosen material</span>
+            </div>
+            <div class="quick-start-card">
+                <img src="{% static 'apollos/img/QuickStart3.svg' %}" alt="QuickStart3"><br><br>
+                <span class="QuickStart">4. Pick up Material</span><br><br><br>
+                <span class="QuickStart2">Pick up the material on the chosen date</span>
+            </div>
+        </div>    
+    </main2>
+    <main3>
+        <div class="front-reverse">
+            <p class="center-aligned">
+                <span class="blue2-text">A</span><span class="gray-text">dvanced</span> <span class="blue2-text">P</span><span class="gray-text">latform</span> <span class="gray-text">for</span>
+                <span class="blue2-text">O</span><span class="gray-text">rganizing</span> <span class="blue2-text">L</span><span class="gray-text">ibrary</span>
+                <span class="blue2-text">L</span><span class="gray-text">ending</span> <span class="gray-text">and</span>
+                <span class="blue2-text">O</span><span class="gray-text">rder</span> <span class="blue2-text">S</span><span class="gray-text">ystem</span>
+            </p>
+            </p>
+            </div> 
+        </div>
+    </main3>
+    <main4>
+        <p>© Pamantasan ng Lungsod ng Maynila. All Rights Reserved.</p>
+    </main4>
 </body>
 </html>

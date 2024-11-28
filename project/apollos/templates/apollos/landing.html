@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
+    <title>Apollo</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'apollos/css/landing.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'apollos/img/ApollosIcon.svg' %}">
+
 </head>
 <body>
     <main1>
@@ -17,15 +19,26 @@
             <button class="login-btn">Login</button>
             <button class="register-btn">Register</button>
         </div>
-        <p class="left-aligned">
-            <span class="black-text">Unlock a World of Knowledge:</span><br>
-            <span class="blue-text">Seamlessly Manage Your <br> Library with Ease!</span>
-        </p>
-        <p class="landing-text">
-            <span>Apollo's is a cutting-edge library management <br> system designed to streamline library operations.</span>
-        </p>        
-
-
+        
+        <div class="front">
+            <div class="left">
+            <p class="left-aligned">
+                <span class="black-text">Unlock a World of Knowledge:</span><br>
+                <span class="blue-text">Seamlessly Manage Your <br> Library with Ease!</span>
+                
+            </p>
+            <p class="landing-text">
+                <span>Apollo's is a cutting-edge library management <br> system designed to streamline library operations.</span>
+                <br>
+                <button class="getstarted-btn">Get Started</button>
+            </p>
+            
+            </div>
+            <div class="landing-image">
+                <img src="{% static 'apollos/img/LandingImage.svg' %}" alt="LandingImage">
+            </div>  
+        </div>
+              
 
     </main1>
     <main>

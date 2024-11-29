@@ -7,10 +7,6 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
-    background-image: url('/static/apollos/img/Background.svg');
-    background-size: cover; /* Ensures the image covers the entire background */
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 header {
@@ -141,7 +137,7 @@ body::-webkit-scrollbar {
     padding-top: 10px;
     padding-bottom: 20px;
     text-wrap: wrap;
-    padding: 20px;
+   
 }
 
 

@@ -135,3 +135,5 @@ EMAIL_PORT = 587  # Port for TLS
 EMAIL_USE_TLS = True  # Use TLS for secure connection
 EMAIL_HOST_USER = 'apollos.notification@gmail.com'
 EMAIL_HOST_PASSWORD = 'ieox eedq mwxd htae'
+
+AUTH_USER_MODEL = 'apollos.CustomUser'

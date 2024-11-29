@@ -42,15 +42,30 @@ body {
 
 
 
-/* Container for the registration form */
+/* Keyframes for pop-up animation */
+@keyframes popUp {
+    0% {
+        transform: scale(0.8); /* Start slightly smaller */
+        opacity: 0;          /* Fully transparent */
+    }
+    100% {
+        transform: scale(1); /* Full size */
+        opacity: 1;          /* Fully visible */
+    }
+}
+
+/* Apply the animation to the registration container */
 .register-container {
     background-color: #FDFEFF; /* Light color for the container */
     padding: 20px;
-    border-radius: 7px; /* Rounded corners */
+    border-radius: 7px;
     box-shadow: 0 1px 9px rgba(0, 0, 0, 0.1); /* Shadow effect */
     width: 100%;
     max-width: 400px; /* Limit width for responsiveness */
+    animation: popUp 0.6s ease-out; /* Animation applied here */
+    transform-origin: center; /* Ensures scaling happens from the center */
 }
+
 
 /* Center the form content */
 h2 {

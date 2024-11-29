@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from .models import UserProfile
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -115,3 +116,22 @@ def send_otp_view(request):
                 return JsonResponse({'success': False})
 
     return JsonResponse({'success': False})
+
+def user_login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Authenticate the user
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            # Log the user in
+            login(request, user)
+            return redirect('home')  # Redirect to a page after successful login
+        else:
+            # If authentication fails, show an error message
+            messages.error(request, "Invalid email or password.")
+            return redirect('login')  # Redirect back to the login page
+
+    return render(request, 'login.html')

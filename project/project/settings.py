@@ -137,3 +137,8 @@ EMAIL_HOST_USER = 'apollos.notification@gmail.com'
 EMAIL_HOST_PASSWORD = 'ieox eedq mwxd htae'
 
 AUTH_USER_MODEL = 'apollos.CustomUser'
+LOGIN_URL = '/login/'
+
+
+SESSION_COOKIE_AGE = 3600  # 1 hour (change this to your desired timeout duration)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

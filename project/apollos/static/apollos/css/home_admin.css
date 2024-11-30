@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    margin: 0px;
+}
+
+/* Main Header Styling */
+.main-header {
+    background-color: white;  /* White background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Soft shadow */
+    padding: 20px;  /* Add padding to give space around the text */
+    margin-bottom: 20px;  /* Add space below the header */
+    text-align: center;  /* Center the text */
+    border-radius: 8px;  /* Optional: Add rounded corners */
+    display: flex;  /* Flexbox for layout */
+    justify-content: space-between;  /* Space between heading and circle */
+    align-items: center;  /* Align vertically */
+}
+
+.main-header h1 {
+    font-size: 36px;  /* Larger font size */
+    color: #333;      /* Darker text color */
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Circle styling */
+.user-circle {
+    width: 50px;  /* Set size of the circle */
+    height: 50px; /* Set size of the circle */
+    border-radius: 50%;  /* Makes it a circle */
+    display: flex;  /* Flexbox to center the text */
+    justify-content: center;  /* Center horizontally */
+    align-items: center;  /* Center vertically */
+    color: white;  /* Text color is white */
+    font-size: 20px;  /* Font size for initials */
+    font-weight: bold;  /* Make initials bold */
+    text-transform: uppercase;  /* Uppercase initials */
+}
+
+.main-header h1 {
+    font-size: 36px;  /* Larger font size */
+    color: #333;      /* Darker text color */
+    font-weight: bold;
+    margin: 0;
+}
+
+.content-panel {
+    margin-top: 20px;
+    padding: 20px;
+ 
+}
+
+
+
+
+
+
+/* General Styles */
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.side-panel {
+    width: 0; /* Initially hidden */
+    height: 100%;
+    background-color: #FFFFFF;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    transition: width 0.2s ease-in-out; /* Smooth transition for panel width */
+    overflow: hidden;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* When the side panel is open */
+.side-panel.open {
+    width: 250px; /* Panel width when open */
+}
+
+/* When the side panel is collapsed (only showing button) */
+.side-panel.collapsed {
+    width: 30px; /* Width when collapsed */
+}
+
+/* Logo container, hide it when collapsed */
+.side-panel .logo-container {
+    text-align: center;
+    display: block; /* Ensures logo is visible when expanded */
+ 
+}
+
+
+/* Adjust the logo size */
+.side-panel .logo-container img {
+    width: 100%; /* Makes the logo scale to the width of the panel */
+    max-width: 170px; /* Maximum width, adjust this value as needed */
+    height: auto; /* Maintain aspect ratio */
+
+}
+
+/* When side panel is collapsed, adjust logo size if needed */
+.side-panel.collapsed .logo-container img {
+    max-width: 40px; /* Adjust size when the panel is collapsed */
+}
+
+/* Hide logo when collapsed */
+.side-panel.collapsed .logo-container {
+    opacity: 0;
+}
+
+.side-panel .toggle-button img {
+    width: 30px; /* Adjust the size of the icon */
+    height: auto; /* Maintain aspect ratio */
+    margin-top: 5px;
+    margin-left: -7px;
+}
+
+/* Toggle button styles */
+.side-panel .toggle-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10; /* Ensure the button is above other content */
+}
+
+/* Make sure the toggle button stays visible when collapsed */
+.side-panel.collapsed .toggle-button {
+    z-index: 10; /* Keep the button above other content */
+}
+
+/* Panel items container */
+.panel-items {
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.3s ease-in-out;
+   
+}
+
+/* When collapsed, hide panel items (buttons) */
+.side-panel.collapsed .panel-items {
+    display: none; /* Remove the items from layout when collapsed */
+}
+
+/* Individual panel item styles */
+/* Panel item styles */
+.panel-item {
+    background: none;
+    border: none;
+    color: #000000; /* Default text color */
+    font-size: 16px;
+    padding: 7px;
+    text-align: left;
+    margin-top: 2px;
+    margin-bottom: 10px;
+    font-family: Poppins;
+    cursor: pointer;
+    transition: background-color 0.0s ease, color 0.3s ease;
+}
+
+/* Highlighted (active) panel item */
+.panel-item.highlighted {
+    color: white; /* Change text color to white */
+    background-color: #748CAC;
+    border-radius: 8px; /* Set background color to #748CAC */
+    font-weight: 600;
+}
+
+/* Change the icon color when highlighted */
+.highlighted img {
+    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(180deg); /* Invert the icon color */
+}
+
+/* Panel item hover effect */
+.panel-item:hover {
+    background-color: #748CAC;
+    color: white;
+    border-radius: 8px;
+    
+}
+
+.panel-item + .separator {
+    margin-top: 10px;
+}
+
+ /* Make separator visible */
+.panel-items .panel-item:last-child + .separator {
+    display: none; /* Remove separator after the last item */
+}
+
+.panel-item img {
+    margin-right: 10px;
+    transition: fill 0.3s ease, color 0.3s ease;  /* Smooth color transition for icon */
+    width: 20px;  /* Set a fixed size for the icon */
+    height: 20px;
+    position: relative;
+    top: 3px;
+}
+
+
+.separator {
+    border-top: 1px solid #E5E7EB; /* Light gray-blue separator */
+    margin: 15px 0; /* Space before and after the line */
+    width: 400px;
+    margin-left: -50px;
+}
+
+/* Main content styles */
+.main-content {
+    margin-left: 0;
+    width: 100%;
+    transition: margin-left 0.3s ease;
+}
+
+.content-panel {
+    display: none;
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.content-panel h2 {
+    color: #2c3e50;
+}
+
+.content-panel p {
+    font-size: 16px;
+    color: #34495e;
+}
+
+/* When side panel is open, shift the main content */
+.side-panel.open + .main-content {
+    margin-left: 250px;
+}
+
+/* When side panel is collapsed, shift the main content */
+.side-panel.collapsed + .main-content {
+    margin-left: 0; /* Make sure the main content does not overlap when collapsed */
+}
+
+/* When side panel is collapsed, adjust the margin-left of the content panel */
+.side-panel.collapsed + .main-content .content-panel {
+    margin-left: 90px; /* Increase margin-left to 90px when side panel is collapsed */
+}
+
+/* Initially hide the form */
+#add-title-form {
+    display: none;
+}
+
+/* You can also add some styles to make the transition smoother */
+#add-title-form {
+    transition: all 0.3s ease-in-out;
+}

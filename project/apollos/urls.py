@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
@@ -13,4 +15,14 @@ urlpatterns = [
     path('reset_password/', views.reset_password_view, name='reset_password'),
     path('password-reset/', views.password_reset_request, name='password_reset_request'),
     path('password-reset/confirm/', views.password_reset_confirm, name='password_reset_confirm'),
-]
+    path('home_admin/', views.home_admin_view, name='home_admin'),
+    path('user_profile/', views.user_profile, name='user_profile'),
+    path('add_title/', views.add_title, name='add_title'),
+    path('home_admin/', views.home_admin, name='home_admin'),
+    path('get-titles/', views.get_book_titles, name='get_book_titles'),
+    
+    
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

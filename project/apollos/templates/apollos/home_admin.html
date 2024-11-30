@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APOLLO’S</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'apollos/css/home_admin.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'apollos/img/ApollosIcon.svg' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Side Panel -->
+        <div id="side-panel" class="side-panel open">
+            <button id="toggle-button" class="toggle-button">
+                <img src="{% static 'apollos/img/BurgerIcon.svg' %}" alt="Menu Icon">
+            </button>
+            <div class="logo-container">
+                <img src="{% static 'apollos/img/ApollosLogo.svg' %}" alt="Logo"> <!-- Replace with your logo -->
+            </div>
+            <div class="panel-items">
+                <div class="separator"></div>
+                <button class="panel-item" onclick="togglePanelContent('dashboard', this)">
+                    <img src="{% static 'apollos/img/HomeIcon.svg' %}" alt="Home Icon">
+                    Dashboard
+                </button>
+                <div class="separator"></div>
+                <button class="panel-item" onclick="togglePanelContent('trending', this)">
+                    <img src="{% static 'apollos/img/TrendingIcon.svg' %}" alt="Trending Icon">
+                    Trending
+                </button>
+                <button class="panel-item" onclick="togglePanelContent('top_borrowed', this)">
+                    <img src="{% static 'apollos/img/TopBorrowedIcon.svg' %}" alt="Borrowed Icon">
+                    Top Borrowed
+                </button>
+                <div class="separator"></div>
+                <button class="panel-item" onclick="togglePanelContent('transaction_history', this)">
+                    <img src="{% static 'apollos/img/TransactionIcon.svg' %}" alt="Transaction Icon">
+                    Transaction History
+                </button>
+                <button id="title-button" class="panel-item" onclick="togglePanelContent('title', this)">
+                    <img src="{% static 'apollos/img/TitleIcon.svg' %}" alt="Title Icon">
+                    Title
+                </button>
+                <button class="panel-item" onclick="togglePanelContent('registration', this)">
+                    <img src="{% static 'apollos/img/RegistrationIcon.svg' %}" alt="Register Icon">
+                    Registration
+                </button>
+                <button class="panel-item" onclick="togglePanelContent('history', this)">
+                    <img src="{% static 'apollos/img/HistoryIcon.svg' %}" alt="History Icon">
+                    History
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            
+            <header class="main-header">
+                <h1>Hellooo</h1> <!-- Main Heading -->
+            
+                <!-- Debugging -->
+                <p>Initials: <span id="initials">Loading...</span></p>
+                <p>Color: <span id="color">Loading...</span></p>
+            
+                <!-- Circle with initials and dynamic background color -->
+                <div class="user-circle" id="user-circle" style="background-color: #748CAC;">
+                    <span id="user-initials">?</span>
+                </div>
+            </header>
+            
+            
+            
+        
+
+            <div id="dashboard" class="content-panel">
+                <h2>Dashboard Content</h2>
+                <p>This is where the Dashboard content goes.</p>
+            </div>
+            <div id="trending" class="content-panel">
+                <h2>Trending Content</h2>
+                <p>This is where the Trending content goes.</p>
+            </div>
+            <div id="top_borrowed" class="content-panel">
+                <h2>Top Borrowed Content</h2>
+                <p>This is where the Top Borrowed content goes.</p>
+            </div>
+            <div id="transaction_history" class="content-panel">
+                <h2>Transaction History Content</h2>
+                <p>This is where the Transaction History content goes.</p>
+            </div>
+            
+            <div id="title-container">
+                <div id="title" class="content-panel">
+                    <h2>Title</h2>
+                    <p>This is where the Title content goes.</p>
+            
+                    <!-- Button to toggle form visibility -->
+                    <button id="show-form-btn">Show Form</button>
+            
+                    <!-- Form to add a book title (initially hidden) -->
+                    <form id="add-title-form" method="POST" enctype="multipart/form-data" action="{% url 'add_title' %}" style="display:none;">
+                        {% csrf_token %}
+                        <!-- Book Title (Required) -->
+                        <label for="book-title">Book Title:</label>
+                        <input type="text" id="book-title" name="book_title" required>
+                        
+                        <!-- Subtitle (Optional) -->
+                        <label for="subtitle">Subtitle:</label>
+                        <input type="text" id="subtitle" name="subtitle">
+                        
+                        <!-- Genre (Optional) -->
+                        <label for="genre">Genre:</label>
+                        <input type="text" id="genre" name="genre">
+                        
+                        <!-- Volume (Optional) -->
+                        <label for="volume">Volume:</label>
+                        <input type="text" id="volume" name="volume">
+                        
+                        <!-- Authors (Optional) -->
+                        <label for="authors">Authors:</label>
+                        <input type="text" id="authors" name="authors">
+                        
+                        <!-- Standard Numbers (Optional) -->
+                        <label for="standard_numbers">Standard Numbers:</label>
+                        <input type="text" id="standard_numbers" name="standard_numbers">
+                        
+                        <!-- Publisher (Optional) -->
+                        <label for="publisher">Publisher:</label>
+                        <input type="text" id="publisher" name="publisher">
+                        
+                        <!-- Published Date (Optional) -->
+                        <label for="published_date">Published Date:</label>
+                        <input type="date" id="published_date" name="published_date">
+                        
+                        <!-- Description (Optional) -->
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description"></textarea>
+                        
+                        <!-- Page Count (Optional) -->
+                        <label for="page_count">Page Count:</label>
+                        <input type="number" id="page_count" name="page_count">
+                        
+                        <!-- Status (Required) -->
+                        <label for="status">Status:</label>
+                        <select id="status" name="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        
+                        <!-- Number of Copies (Optional) -->
+                        <label for="num_of_copies">Number of Copies:</label>
+                        <input type="number" id="num_of_copies" name="num_of_copies">
+                        
+                        <!-- Starting Barcode (Optional) -->
+                        <label for="starting_barcode">Starting Barcode:</label>
+                        <input type="text" id="starting_barcode" name="starting_barcode">
+                        
+                        <!-- Code Number (Optional) -->
+                        <label for="code_number">Code Number:</label>
+                        <input type="text" id="code_number" name="code_number">
+                        
+                        <!-- Material Type (Optional) -->
+                        <label for="material_type">Material Type:</label>
+                        <input type="text" id="material_type" name="material_type">
+                        
+                        <!-- Purchase Price (Optional) -->
+                        <label for="purchase_price">Purchase Price:</label>
+                        <input type="number" step="0.01" id="purchase_price" name="purchase_price">
+                        
+                        <!-- Date Acquired (Optional) -->
+                        <label for="date_acquired">Date Acquired:</label>
+                        <input type="date" id="date_acquired" name="date_acquired">
+                        
+                        <!-- Sub-Location (Optional) -->
+                        <label for="sub_location">Sub-Location:</label>
+                        <select id="sub_location" name="sub_location">
+                            <option value="circulation">Circulation</option>
+                            <option value="floor1">Floor 1</option>
+                            <option value="floor2">Floor 2</option>
+                        </select>
+                        
+                        <!-- Vendor (Optional) -->
+                        <label for="vendor">Vendor:</label>
+                        <input type="text" id="vendor" name="vendor">
+                        
+                        <!-- Funding Source (Optional) -->
+                        <label for="funding_source">Funding Source:</label>
+                        <input type="text" id="funding_source" name="funding_source">
+                        
+                        <!-- Note (Optional) -->
+                        <label for="note">Note:</label>
+                        <textarea id="note" name="note"></textarea>
+                        
+                        <!-- Attach File (Optional) -->
+                        <label for="attach_file">Attach File:</label>
+                        <input type="file" id="attach-file" name="attach_file">
+                        
+                        <!-- Attach Image (Optional) -->
+                        <label for="attach_image">Attach Image:</label>
+                        <input type="file" id="attach-image" name="attach_image">
+                        
+                        <!-- Submit Button -->
+                        <button type="submit" class="add-title-btn">Add Title</button>
+                    </form>
+            
+                    <!-- List of titles will be displayed here -->
+                    <div id="title-list">
+                        <ul id="title-list-ul">
+                            {% for title in titles %}
+                                <li>
+                                    <strong>{{ title.name }}</strong><br>
+                                    <p>attach_image value: {{ title.attach_image }}</p>  <!-- Debugging line -->
+                                    {% if title.attach_image %}
+                                        <p>Image URL: {{ title.attach_image.url }}</p>  <!-- Debugging line -->
+                                        <img src="{{ title.attach_image.url }}" alt="{{ title.name }}" width="100">
+                                    {% else %}
+                                        <p>No image available</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div> 
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            <div id="registration" class="content-panel">
+                <h2>Registration Content</h2>
+                <p>This is where the Registration content goes.</p>
+            </div>
+            <div id="history" class="content-panel">
+                <h2>History Content</h2>
+                <p>This is where the History content goes.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePanelContent(contentId, clickedButton) {
+            // Hide all content panels
+            const panels = document.querySelectorAll('.content-panel');
+            panels.forEach(panel => {
+                panel.style.display = 'none';
+                // Set the background color of the user circle dynamically
+                const userCircle = document.querySelector('.user-circle');
+                const color = userCircle.getAttribute('data-color');
+                userCircle.style.backgroundColor = color;
+            });
+
+            // Show the selected content panel
+            const contentPanel = document.getElementById(contentId);
+            if (contentPanel) {
+                contentPanel.style.display = 'block';
+            }
+
+            // Remove the highlight class from all panel items
+            const panelItems = document.querySelectorAll('.panel-item');
+            panelItems.forEach(item => {
+                item.classList.remove('highlighted');
+            });
+
+            // Add the highlight class to the clicked button
+            clickedButton.classList.add('highlighted');
+        }
+
+        // Initially show the Dashboard content when the page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            togglePanelContent('dashboard', document.querySelector('.panel-item'));
+        });
+
+        // Toggle the side panel visibility
+        document.getElementById('toggle-button').addEventListener('click', function() {
+            const sidePanel = document.getElementById('side-panel');
+            sidePanel.classList.toggle('open'); // Toggle the 'open' class to animate the panel
+            sidePanel.classList.toggle('collapsed'); // Toggle the 'collapsed' state
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Fetch the initials and color (these can come from Django context or an API call)
+        var initials = '{{ initials }}'; // Use Django context to pass initial values
+        var color = '{{ color }}'; // Use Django context to pass initial values
+
+        // Fallback if these values are not available
+        if (!initials) {
+            initials = 'XX';  // Default initials
+        }
+        if (!color) {
+            color = '#748CAC';  // Default color
+        }
+
+        // Set the initials and color in the HTML
+        document.getElementById('initials').textContent = initials;
+        document.getElementById('color').textContent = color;
+
+        // Set the user circle background color and initials
+        var userCircle = document.getElementById('user-circle');
+        userCircle.style.backgroundColor = color;
+        
+        var userInitials = document.getElementById('user-initials');
+        userInitials.textContent = initials;
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const addTitleForm = document.getElementById('add-title-form');
+            const titleList = document.getElementById('title-list-ul');
+            const bookTitleInput = document.getElementById('book-title');
+            const attachImage = document.getElementById('attach-image');  // Corrected this line
+            const attachFile = document.getElementById('attach-file');  // Corrected this line
+
+            // Function to fetch titles and populate the title list
+            function fetchTitles() {
+                fetch("/get-titles/")  // Use the correct endpoint for fetching titles
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.titles) {
+                            titleList.innerHTML = '';  // Clear the current list
+
+                            // Add the updated titles to the list
+                            data.titles.forEach(title => {
+                                const li = document.createElement('li');
+                                const titleText = document.createElement('strong');
+                                titleText.textContent = title.name;
+                                li.appendChild(titleText);
+
+                                // Check if the title has an image URL
+                                if (title.attach_image) {
+                                    const img = document.createElement('img');
+                                    img.src = title.attach_image;  // Use the URL directly
+                                    img.alt = title.name;
+                                    img.width = 100;  // Optional: Set image size
+                                    li.appendChild(img);
+                                } else {
+                                    const noImageText = document.createElement('p');
+                                    noImageText.textContent = 'No image available';
+                                    li.appendChild(noImageText);
+                                }
+
+                                // Append the list item to the list
+                                titleList.appendChild(li);
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error fetching titles:', error));
+            }
+
+            // Initially fetch titles
+            fetchTitles();
+
+
+
+
+
+            // Add title form submit event listener
+            addTitleForm.addEventListener('submit', function (e) {
+                e.preventDefault();  // Prevent the form from submitting normally
+                console.log('Form submitted!');  // Debugging line to confirm submit is triggered
+
+                const bookTitle = bookTitleInput.value.trim();
+                const attachImageFile = attachImage.files[0];  // Assuming input is of type 'file'
+                const attachFileFile = attachFile.files[0];    // Assuming input is of type 'file'
+
+                console.log('Submitting title:', bookTitle);  // Debugging line
+
+                if (!bookTitle) {
+                    alert('Please enter a book title.');
+                    return;
+                }
+
+                // Prepare the FormData object to send both text and files
+                const formData = new FormData();
+                formData.append('book_title', bookTitle);
+
+                if (attachImageFile) {
+                    formData.append('attach_image', attachImageFile);
+                }
+
+                if (attachFileFile) {
+                    formData.append('attach_file', attachFileFile);
+                }
+
+                // Send the title and files to the server via AJAX
+                fetch("{% url 'add_title' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: formData  // Send FormData directly (no need for JSON.stringify)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Server response:', data);  // Log the server response to debug
+                    if (data.titles) {
+                        titleList.innerHTML = '';  // Clear the current list
+                        // Add the updated titles to the list
+                        data.titles.forEach(title => {
+                            const li = document.createElement('li');
+                            li.textContent = title.name;
+                            titleList.appendChild(li);
+                        });
+
+                        // Clear the input fields after adding the title
+                        bookTitleInput.value = '';
+                        attachImage.value = '';  // Reset file input
+                        attachFile.value = '';    // Reset file input
+                    }
+                })
+                .catch(error => console.error('Error adding title:', error));
+            });
+
+            const addTitleButton = document.getElementById('title-button');  // Assuming this is the "Add Title" button
+            addTitleButton.addEventListener('click', function () {
+                fetchTitles();  // Fetch and display the titles
+                // Clear the form when the button is clicked
+                addTitleForm.reset();  // Reset the form to its initial state
+            });
+
+            // Event listener for the "Title" button to load titles when clicked
+            const titleButton = document.getElementById('title-button');
+            titleButton.addEventListener('click', function() {
+                fetchTitles();
+            });
+
+            // Initially populate the title list if the "Title" panel is already visible
+            const titlePanel = document.getElementById('title');
+            if (titlePanel.style.display !== 'none') {
+                fetchTitles();  // Populate titles if the panel is already open on page load
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const showFormBtn = document.getElementById('show-form-btn');
+            const addTitleForm = document.getElementById('add-title-form');
+            const titleList = document.getElementById('title-list');
+
+            // Toggle the visibility of the form and title list when the "Show Form" button is clicked
+            showFormBtn.addEventListener('click', function () {
+                if (addTitleForm.style.display === "none" || addTitleForm.style.display === "") {
+                    // Hide the title list and show the form
+                    titleList.style.display = "none";
+                    addTitleForm.style.display = "block";
+                    showFormBtn.textContent = "Show Titles";  // Change button text
+                } else {
+                    // Hide the form and show the title list
+                    addTitleForm.style.display = "none";
+                    titleList.style.display = "block";
+                    showFormBtn.textContent = "Show Form";  // Change button text
+                }
+            });
+        });
+
+
+
+
+            
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>

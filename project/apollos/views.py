@@ -435,3 +435,135 @@ def delete_titles(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid HTTP method. Use POST to delete books."}, status=405)
+
+
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.core.exceptions import ValidationError
+import json
+from .models import BookTitle
+
+def update_title(request):
+    if request.method == 'POST':
+        try:
+            # Ensure the body is read only once
+            if request.content_type == 'application/json':
+                data = json.loads(request.body)
+            else:
+                data = request.POST
+            
+            # Extract the form data
+            standard_numbers = data.get('standard_numbers')
+            book_title = data.get('book_title')
+            subtitle = data.get('subtitle', '')
+            genre = data.get('genre', '')
+            volume = data.get('volume', '')
+            authors = data.get('authors', '')
+            publisher = data.get('publisher', '')
+            published_date = data.get('published_date', '')
+            description = data.get('description', '')
+            page_count = data.get('page_count', '')
+            status = data.get('status', '')
+            num_of_copies = data.get('num_of_copies', '')
+            starting_barcode = data.get('starting_barcode', '')
+            code_number = data.get('code_number', '')
+            material_type = data.get('material_type', '')
+            purchase_price = data.get('purchase_price', '')
+            date_acquired = data.get('date_acquired', '')
+            sub_location = data.get('sub_location', '')
+            vendor = data.get('vendor', '')
+            funding_source = data.get('funding_source', '')
+            note = data.get('note', '')
+
+            # Handle file uploads
+            attach_file = request.FILES.get('attach_file', None)
+            attach_image = request.FILES.get('attach_image', None)
+
+            # Validate required fields
+            if not book_title or not standard_numbers:
+                return JsonResponse({'error': 'Book title and standard number are required.'}, status=400)
+
+            # Check if the book with the provided standard number exists
+            book_to_update = BookTitle.objects.filter(standard_numbers=standard_numbers).first()
+            if not book_to_update:
+                return JsonResponse({'error': 'Book not found with the given standard number.'}, status=404)
+
+            # Update the fields of the book
+            book_to_update.name = book_title
+            book_to_update.subtitle = subtitle
+            book_to_update.genre = genre
+            book_to_update.volume = volume
+            book_to_update.authors = authors
+            book_to_update.publisher = publisher
+            book_to_update.published_date = published_date if published_date else None
+            book_to_update.description = description
+            book_to_update.page_count = page_count if page_count else None
+            book_to_update.status = status
+            book_to_update.num_of_copies = num_of_copies if num_of_copies else None
+            book_to_update.starting_barcode = starting_barcode
+            book_to_update.code_number = code_number
+            book_to_update.material_type = material_type
+            book_to_update.purchase_price = purchase_price if purchase_price else None
+            book_to_update.date_acquired = date_acquired if date_acquired else None
+            book_to_update.sub_location = sub_location
+            book_to_update.vendor = vendor
+            book_to_update.funding_source = funding_source
+            book_to_update.note = note
+
+            # Update file attachments (if any)
+            if attach_file:
+                book_to_update.attach_file = attach_file
+            if attach_image:
+                book_to_update.attach_image = attach_image
+
+            # Save the updated book title
+            book_to_update.save()
+
+            # Return the updated list of titles
+            titles = BookTitle.objects.all()
+            titles_data = [{'name': title.name, 'standard_numbers': title.standard_numbers} for title in titles]
+
+            return JsonResponse({'titles': titles_data})
+
+        except Exception as e:
+            # Catch any errors and return a JSON response with the error message
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({"error": "Invalid HTTP method. Use POST to update books."}, status=405)
+
+
+
+
+def get_book_data(request, standard_number):
+    try:
+        # Fetch the book using the standard number
+        book = BookTitle.objects.get(standard_numbers=standard_number)
+        
+        # Prepare the book data to return
+        book_data = {
+            'name': book.name,
+            'standard_numbers': book.standard_numbers,
+            'subtitle': book.subtitle,
+            'genre': book.genre,
+            'volume': book.volume,
+            'authors': book.authors,
+            'publisher': book.publisher,
+            'published_date': book.published_date,
+            'description': book.description,
+            'page_count': book.page_count,
+            'status': book.status,
+            'num_of_copies': book.num_of_copies,
+            'starting_barcode': book.starting_barcode,
+            'code_number': book.code_number,
+            'material_type': book.material_type,
+            'purchase_price': book.purchase_price,
+            'date_acquired': book.date_acquired,
+            'sub_location': book.sub_location,
+            'vendor': book.vendor,
+            'funding_source': book.funding_source,
+            'note': book.note,
+        }
+        
+        return JsonResponse({'success': True, 'book': book_data})
+    except BookTitle.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Book not found'}, status=404)

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APOLLO’S</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'apollos/css/home_admin.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'apollos/img/ApollosIcon.svg' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Side Panel -->
+        <div id="side-panel" class="side-panel open">
+            <button id="toggle-button" class="toggle-button">
+                <img src="{% static 'apollos/img/BurgerIcon.svg' %}" alt="Menu Icon">
+            </button>
+            <div class="logo-container">
+                <img src="{% static 'apollos/img/ApollosLogo.svg' %}" alt="Logo"> <!-- Replace with your logo -->
+            </div>
+            <div class="panel-items">
+                <div class="separator"></div>
+                <button class="panel-item" onclick="togglePanelContent('dashboard', this)">
+                    <img src="{% static 'apollos/img/HomeIcon.svg' %}" alt="Home Icon">
+                    Dashboard
+                </button>
+                <div class="separator"></div>
+                <button class="panel-item" onclick="togglePanelContent('trending', this)">
+                    <img src="{% static 'apollos/img/TrendingIcon.svg' %}" alt="Trending Icon">
+                    Trending
+                </button>
+                <button class="panel-item" onclick="togglePanelContent('top_borrowed', this)">
+                    <img src="{% static 'apollos/img/TopBorrowedIcon.svg' %}" alt="Borrowed Icon">
+                    Top Borrowed
+                </button>
+                <div class="separator"></div>
+                <button class="panel-item" onclick="togglePanelContent('transaction_history', this)">
+                    <img src="{% static 'apollos/img/TransactionIcon.svg' %}" alt="Transaction Icon">
+                    Transaction History
+                </button>
+                <button id="title-button" class="panel-item" onclick="togglePanelContent('title', this)">
+                    <img src="{% static 'apollos/img/TitleIcon.svg' %}" alt="Title Icon">
+                    Title
+                </button>
+                <button class="panel-item" onclick="togglePanelContent('registration', this)">
+                    <img src="{% static 'apollos/img/RegistrationIcon.svg' %}" alt="Register Icon">
+                    Registration
+                </button>
+                <button class="panel-item" onclick="togglePanelContent('history', this)">
+                    <img src="{% static 'apollos/img/HistoryIcon.svg' %}" alt="History Icon">
+                    History
+                </button>
+            </div>
+        </div>
+
+    
+    </div>
+
+
+
+</body>    
+</html>

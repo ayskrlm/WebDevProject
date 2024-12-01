@@ -376,7 +376,7 @@ body {
   
 /* Style for the Submit Button */
 .add-title-btn {
-    background-color: #4CAF50; /* Green */
+    background-color: #748CAC; /* Green */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -388,7 +388,7 @@ body {
 }
 
 .add-title-btn:hover {
-    background-color: #45a049; /* Slightly darker green on hover */
+    background-color: #4f5f74; /* Slightly darker green on hover */
 }
 
 .add-title-btn:focus {
@@ -410,7 +410,7 @@ body {
 }
 
 .add-title-btn:hover {
-    background-color: #45a049; /* Slightly darker green on hover */
+    background-color: #4f5f74; /* Slightly darker green on hover */
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
 }
 
@@ -513,17 +513,103 @@ input[type="file"]:focus {
     transition: all 0.3s ease-in-out;
 }
 
-/* Styling for the search input field */
-#search-input {
+/* Container for search and buttons */
+#search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
-    padding: 8px;
-    width: 100%;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
 }
 
+/* Search Input */
+#search-input {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 15px;
+    transition: border-color 0.3s ease;
+}
+
+#search-input:focus {
+    border-color: #748CAC;
+    outline: none;
+}
+
+#items-con {
+    position: relative;
+    float: inline-end;
+}
+
+/* Delete Button */
+#delete-button {
+    background-color: rgb(255, 255, 255); /* Red */
+    color: rgb(0, 0, 0);
+    border: 1px solid #D1D5DB; /* Red border */
+    padding: 5px 10px;
+    font-size: 16px;
+    font-family: Poppins;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 10px; /* Add space between buttons */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Initial shadow */
+}
+
+#delete-button:hover {
+    background-color: #e53935;
+}
+
+/* Edit Button */
+#edit-button {
+    background-color: rgb(255, 255, 255); /* Red */
+    color: rgb(0, 0, 0);
+    border: 1px solid #D1D5DB; /* Red border */
+    padding: 5px 10px;
+    font-size: 16px;
+    font-family: Poppins;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 10px; /* Add space between buttons */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Initial shadow */
+}
+
+#edit-button:hover {
+    background-color: #45a049;
+}
+
+/* Dropdown */
+label {
+    font-size: 14px;
+    margin-right: 10px;
+    font-weight: 600;
+    font-family: Poppins;
+    margin-left: 20px;
+}
+
+#items-per-page {
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+#items-per-page:focus {
+    border-color: #748CAC;
+    outline: none;
+}
+
+/* Flexbox for layout */
+#search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
 /* General container styling */
 #title-list {
@@ -665,7 +751,8 @@ input[type="file"]:focus {
     margin: 10px;
     cursor: pointer;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-family: Poppins;
 }
 
 #confirm-delete {
@@ -694,9 +781,10 @@ input[type="file"]:focus {
 .modal-content {
     background: white;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 15px;
     text-align: center;
     width: 300px;
+    font-family: Poppins;
 }
 
 .modal button {
@@ -704,10 +792,170 @@ input[type="file"]:focus {
     margin: 10px;
     cursor: pointer;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 #close-success-modal {
-    background-color: green;
+    background-color: red;
     color: white;
 }
+
+
+
+
+#edit-title-form label {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 8px;
+    display: block;
+    font-family: Poppins;
+
+  }
+  
+  #edit-title-form input[type="text"],
+  #edit-title-form input[type="date"],
+  #edit-title-form input[type="number"],
+  #edit-title-form input[type="file"],
+  #edit-title-form select,
+  #edit-title-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Poppins;
+    box-sizing: border-box;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Initial shadow */
+  }
+  
+  #edit-title-form input[type="text"]:focus,
+  #edit-title-form input[type="number"]:focus,
+  #edit-title-form textarea:focus,
+  #edit-title-form select:focus {
+    border-color: #748CAC;
+    outline: none;
+  }
+  
+  #edit-title-form textarea {
+    resize: vertical;
+    min-height: 100px;
+    height: 133px;
+    font-family: Poppins;
+  }
+
+#edit-title-form {
+    transition: all 0.3s ease-in-out;
+}
+
+.edit-title-btn {
+    background-color: #748CAC; /* Green */
+    color: white;
+    border: none;
+    font-family: Poppins;
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Initial shadow */
+}
+
+.edit-title-btn:hover {
+    background-color: #4f5f74;  /* Slightly darker green */
+}
+
+/* Cancel Button */
+.cancel-btn-edit {
+    background-color: #ffffff; /* Red */
+    color: rgb(0, 0, 0);
+    border: 1px solid #D1D5DB; /* Red border */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 10px; /* Add space between buttons */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Initial shadow */
+}
+
+.cancel-btn-edit:hover {
+    background-color: #e53935;  /* Slightly darker red */
+}
+
+
+#pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    font-family: Poppins;
+    font-weight: bold;
+    font-size: 12px;
+   
+}
+
+/* Page info text */
+#page-info {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Page number text */
+#page-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Previous and Next buttons */
+button {
+
+
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: #748CAC;
+    color: #555;
+}
+
+button:hover {
+    background-color: #4CAF50;  /* Green on hover */
+    color: white;
+}
+
+/* Disabled buttons (e.g., when on the first page or last page) */
+button:disabled {
+    background-color: #dcdcdc;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Spacing for buttons */
+button#prev-page, button#next-page {
+    font-size: 14px;
+    font-family: Poppins;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* Pagination arrows for a more visual look */
+button#prev-page:before {
+    content: '<';
+    
+}
+
+button#next-page:after {
+    content: '>';
+   
+}
+

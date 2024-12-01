@@ -21,7 +21,8 @@ urlpatterns = [
     path('home_admin/', views.home_admin, name='home_admin'),
     path('get-titles/', views.get_book_titles, name='get_book_titles'),
     path('delete-titles/', views.delete_titles, name='delete_titles'),
-    
+    path('update_title/', views.update_title, name='update_title'),
+    path('get-book-data/<str:standard_number>/', views.get_book_data, name='get_book_data'),
     
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

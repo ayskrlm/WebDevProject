@@ -25,6 +25,14 @@
                     Dashboard
                 </button>
                 <div class="separator"></div>
+                <button class="panel-item" onclick="togglePanelContent('read_online', this)">
+                    <img src="{% static 'apollos/img/ReadOnlineIcon.svg' %}" alt="Read Icon">
+                    Read Online
+                </button>
+                <button class="panel-item" onclick="togglePanelContent('saved', this)">
+                    <img src="{% static 'apollos/img/SavedIcon.svg' %}" alt="Saved Icon">
+                    Saved
+                </button>
                 <button class="panel-item" onclick="togglePanelContent('trending', this)">
                     <img src="{% static 'apollos/img/TrendingIcon.svg' %}" alt="Trending Icon">
                     Trending
@@ -34,27 +42,320 @@
                     Top Borrowed
                 </button>
                 <div class="separator"></div>
-                <button class="panel-item" onclick="togglePanelContent('transaction_history', this)">
-                    <img src="{% static 'apollos/img/TransactionIcon.svg' %}" alt="Transaction Icon">
-                    Transaction History
+                <button class="panel-item" onclick="togglePanelContent('reservations', this)">
+                    <img src="{% static 'apollos/img/ReservationIcon.svg' %}" alt="Reservations Icon">
+                    Reservations
                 </button>
-                <button id="title-button" class="panel-item" onclick="togglePanelContent('title', this)">
-                    <img src="{% static 'apollos/img/TitleIcon.svg' %}" alt="Title Icon">
-                    Title
+                <button class="panel-item" onclick="togglePanelContent('for_returns', this)">
+                    <img src="{% static 'apollos/img/ForReturnIcon.svg' %}" alt="Return Icon">
+                    For Returns
                 </button>
-                <button class="panel-item" onclick="togglePanelContent('registration', this)">
-                    <img src="{% static 'apollos/img/RegistrationIcon.svg' %}" alt="Register Icon">
-                    Registration
+                <button class="panel-item" onclick="togglePanelContent('for_pickup', this)">
+                    <img src="{% static 'apollos/img/ForPickUpIcon.svg' %}" alt="Pickup Icon">
+                    For Pick Up
                 </button>
-                <button class="panel-item" onclick="togglePanelContent('history', this)">
-                    <img src="{% static 'apollos/img/HistoryIcon.svg' %}" alt="History Icon">
-                    History
+                <button class="panel-item" onclick="togglePanelContent('all_transactions', this)">
+                    <img src="{% static 'apollos/img/AllTransactionIcon.svg' %}" alt="Transactions Icon">
+                    All Transactions 
                 </button>
             </div>
         </div>
 
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <header class="main-header">
+                <h1>Hellooo</h1>
+                <p>Initials: <span id="initials">Loading...</span></p>
+                <p>Color: <span id="color">Loading...</span></p>
+                <div class="user-circle" id="user-circle" style="background-color: #748CAC;">
+                    <span id="user-initials">?</span>
+                </div>
+            </header>
+        
+            <!-- Dashboard Content -->
+            <div id="dashboard" class="content-panel">
+                <h2>Welcome, {{ user.first_name }}!</h2>  <!-- Greet user by first name -->
+                <p>Welcome to your personalized dashboard!</p>
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <h3>Total Books</h3>
+                        <p>150</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Books Borrowed</h3>
+                        <p>20</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Books Reserved</h3>
+                        <p>5</p>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Read Online Content -->
+            <div id="read_online" class="content-panel">
+                <h2>Read Online</h2>
+                <p>Browse books available to read online:</p>
+                <div id="book-list" class="book-list">
+                    <!-- Books will be dynamically inserted here by JS -->
+                </div>
+            </div>
+
+            
+            
+        
+            <!-- Saved Content -->
+            <div id="saved" class="content-panel">
+                <h2>Your Saved Books</h2>
+                <p>These are your saved books:</p>
+                <ul>
+                    <li>Book 1 - <button>Remove</button></li>
+                    <li>Book 2 - <button>Remove</button></li>
+                    <!-- Add more saved books -->
+                </ul>
+            </div>
+        
+            <!-- Trending Content -->
+            <div id="read_online" class="content-panel">
+                <h2>Read Online</h2>
+                <p>Browse books available to read online:</p>
+                <div id="book-list" class="book-list">
+                    <!-- Books will be inserted here by JavaScript -->
+                </div>
+            </div>
+        
+            <!-- Top Borrowed Content -->
+            <div id="top_borrowed" class="content-panel">
+                <h2>Top Borrowed Books</h2>
+                <ul>
+                    <li>Book 1 - Borrowed 50 times</li>
+                    <li>Book 2 - Borrowed 40 times</li>
+                    <!-- Add more top borrowed books -->
+                </ul>
+            </div>
+        
+            <!-- Reservations Content -->
+            <div id="reservations" class="content-panel">
+                <h2>Your Reservations</h2>
+                <ul>
+                    <li>Book 1 - Reserved for 5 days</li>
+                    <li>Book 2 - Reserved for 3 days</li>
+                    <!-- Add more reservations -->
+                </ul>
+            </div>
+        
+            <!-- For Returns Content -->
+            <div id="for_returns" class="content-panel">
+                <h2>Books for Return</h2>
+                <ul>
+                    <li>Book 1 - Due for return in 2 days</li>
+                    <li>Book 2 - Due for return in 3 days</li>
+                    <!-- Add more books for return -->
+                </ul>
+            </div>
+        
+            <!-- For Pick Up Content -->
+            <div id="for_pickup" class="content-panel">
+                <h2>Books Ready for Pickup</h2>
+                <ul>
+                    <li>Book 1 - Ready for pickup</li>
+                    <li>Book 2 - Ready for pickup</li>
+                    <!-- Add more books ready for pickup -->
+                </ul>
+            </div>
+        
+            <!-- All Transactions Content -->
+            <div id="all_transactions" class="content-panel">
+                <h2>All Transactions</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Book Title</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TX001</td>
+                            <td>Book 1</td>
+                            <td>Borrowed</td>
+                            <td>2024-11-25</td>
+                        </tr>
+                        <!-- Add more transactions -->
+                    </tbody>
+                </table>
+            </div>
+        
+        </div> 
+
+        <div id="book-modal" class="modal-book">
+            <div class="modal-content-book">
+                <span id="close-modal-book" class="close-book">&times;</span>
+                <h2 id="modal-book-title"></h2>
+                <div class="separator2"></div>
+                <div class="modal-body">
+                    
+                    <!-- Image on the left -->
+                    <div class="modal-image">
+                        
+                        <img id="modal-book-image" src="" alt="Book Image">
+                    </div>
+        
+                    <!-- Information on the right -->
+                    <div class="modal-info">
+                        <p><strong>Title: </strong> <span id="modal-book-title2"></span></p>
+                        <p><strong>Genre: </strong> <span id="modal-genre"></span></p>
+                        <p><strong>Author/s: </strong> <span id="modal-authors"></span></p>
+                        <p><strong>Publisher: </strong> <span id="modal-publisher"></span></p>
+                        <p><strong>Published Date: </strong> <span id="modal-published-date"></span></p>
+                        <p><strong>Description: </strong> <span id="modal-description"></span></p>
+                        <p><strong>Page Count: </strong> <span id="modal-page-count"></span></p>
+                        <p><strong>Material Type: </strong> <span id="modal-material-type"></span></p>
+                    </div>
+                     
+                </div>
+                <div class="separator2"></div>   
+
+                
+            </div>
+        </div>
+        
+
+
     
     </div>
+
+    <script>
+        function togglePanelContent(contentId, clickedButton) {
+            // Hide all content panels
+            const panels = document.querySelectorAll('.content-panel');
+            panels.forEach(panel => {
+                panel.style.display = 'none';
+                // Set the background color of the user circle dynamically
+                const userCircle = document.querySelector('.user-circle');
+                const color = userCircle.getAttribute('data-color');
+                userCircle.style.backgroundColor = color;
+            });
+
+            // Show the selected content panel
+            const contentPanel = document.getElementById(contentId);
+            if (contentPanel) {
+                contentPanel.style.display = 'block';
+            }
+
+            // Remove the highlight class from all panel items
+            const panelItems = document.querySelectorAll('.panel-item');
+            panelItems.forEach(item => {
+                item.classList.remove('highlighted');
+            });
+
+            // Add the highlight class to the clicked button
+            clickedButton.classList.add('highlighted');
+        }
+
+
+        // Fetch books from the API
+        // Fetch books from the API
+        fetch('/api/active-books/')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Log the data to ensure it's being received
+
+                const books = data.books;
+                const bookListContainer = document.getElementById('book-list');  // Ensure you have an element with id 'book-list'
+
+                if (books.length === 0) {
+                    // If there are no books, display a message
+                    bookListContainer.innerHTML = '<p>No books available to read online at the moment.</p>';
+                } else {
+                    // Loop through the books and add them to the page
+                    books.forEach(book => {
+                        console.log(book);  // Log each book to check its properties
+
+                        const bookItem = document.createElement('div');
+                        bookItem.classList.add('book-item');
+                        bookItem.dataset.bookInfo = JSON.stringify(book);  // Store book data in the div
+                        const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+                        // Create the book content
+                        const bookImage = document.createElement('img');
+                        // Use a fallback image if no image_url is available
+                        bookImage.src = book.image_url || fallbackImage;  // Path to fallback image
+                        bookImage.alt = book.name;
+
+                        const bookTitle = document.createElement('h3');
+                        bookTitle.textContent = book.name;
+
+                        // Append the elements to the book item
+                        bookItem.appendChild(bookImage);
+                        bookItem.appendChild(bookTitle);
+
+                        // Append the book item to the list container
+                        bookListContainer.appendChild(bookItem);
+
+                        // Add click event to open the modal
+                        bookItem.addEventListener('click', () => {
+                            openModal(book);
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching books:', error);
+            });
+
+        // Function to open the modal and populate it with book data
+        function openModal(book) {
+            const modal = document.getElementById('book-modal');
+            const modalBookTitle = document.getElementById('modal-book-title');
+            const modalBookTitle2 = document.getElementById('modal-book-title2');
+            const modalBookImage = document.getElementById('modal-book-image');
+            const modalAuthors = document.getElementById('modal-authors');
+            const modalGenre = document.getElementById('modal-genre');
+            const modalPublishedDate = document.getElementById('modal-published-date');
+            const modalPublisher = document.getElementById('modal-publisher');
+            const modalPageCount = document.getElementById('modal-page-count');
+            const modalMaterialType = document.getElementById('modal-material-type');
+            const modalDescription = document.getElementById('modal-description');
+            const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+            // Set modal content
+            modalBookTitle.textContent = book.name;
+            modalBookTitle2.textContent = book.name;
+            modalBookImage.src = book.image_url || fallbackImage;
+            
+            // Check if authors is an array; if not, make it an array or use as is
+            const authors = Array.isArray(book.authors) ? book.authors : [book.authors];
+            modalAuthors.textContent = authors.join(', '); // Join authors with commas
+
+            modalGenre.textContent = book.genre;
+            modalPublishedDate.textContent = book.published_date;
+            modalPublisher.textContent = book.publisher;
+            modalPageCount.textContent = book.page_count;
+            modalMaterialType.textContent = book.material_type;
+            modalDescription.textContent = book.description;
+
+            // Show the modal
+            modal.style.display = 'block';
+        }
+
+        // Function to close the modal
+        document.getElementById('close-modal-book').addEventListener('click', () => {
+            const modal = document.getElementById('book-modal');
+            modal.style.display = 'none';
+        });
+
+        // Close modal if user clicks outside of the modal
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('book-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+
+
+    </script>
 
 
 

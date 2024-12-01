@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from apollos.models import CustomUser
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordResetForm
-from .models import UserProfile
 from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
@@ -20,6 +19,7 @@ from django.contrib.auth import get_user_model, login
 from django.templatetags.static import static
 from email.mime.image import MIMEImage
 from .models import BookTitle
+
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
@@ -240,44 +240,7 @@ def password_reset_confirm(request):
 
     return JsonResponse({'error': 'Invalid method.'}, status=405)
 
-def user_profile(request):
-    initials = "NA"  # Default initials
-    color = "#000000"  # Default color
-    
-    if request.user.is_authenticated:
-        try:
-            # Access the related UserProfile for the logged-in user
-            print(f"Fetching profile for user: {request.user.email}")  # Debugging log
-            user_profile = request.user.userprofile  # Get related profile
-            
-            # Print debug statements for user profile
-            print(f"User Profile: {user_profile}")  # Check user profile
-            print(f"First Name: {user_profile.first_name}, Last Name: {user_profile.last_name}")  # Debugging
-            
-            initials = user_profile.get_initials()  # Get initials
-            color = user_profile.get_random_color()  # Get random color
 
-        except CustomUser.DoesNotExist:
-            print(f"No UserProfile found for {request.user.email}")  # Debugging output
-    
-    # Print the initials and color for debugging purposes
-    print(f"Initials: {initials}, Color: {color}")  
-    
-    # Choose template based on user role (admin or regular)
-    if request.user.is_staff:
-        template = 'apollos/home_admin.html'  # Admin template
-    else:
-        template = 'apollos/home.html'  # Regular user template
-    
-    # Pass initials and color to the template context
-    return render(request, template, {'initials': initials, 'color': color})
-
-
-
-def get_random_color():
-    # Example function to generate a random color (you can customize this)
-    colors = ['#748CAC', '#FF5733', '#33FF57', '#3357FF']
-    return random.choice(colors)
 
 
 def home_admin(request):
@@ -566,4 +529,36 @@ def get_book_data(request, standard_number):
         
         return JsonResponse({'success': True, 'book': book_data})
     except BookTitle.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Book not found'}, status=404)
+        return JsonResponse({'success': False, 'error': 'Book not found'}, status=404)  
+    
+
+@login_required
+def dashboard_user(request):
+    # Get the logged-in user's CustomUser instance
+    user = request.user  # `request.user` automatically gives the logged-in user
+    
+    return render(request, 'home.html', {'user': user})
+
+
+def read_online(request):
+    # Fetch active books from the database
+    books = BookTitle.objects.filter(status='active')
+    
+    # Prepare the response data
+    book_list = []
+    for book in books:
+        book_list.append({
+            'name': book.name,
+            'image_url': book.attach_image.url if book.attach_image else None,  # Handle the case where the image doesn't exist
+            'file_url': book.attach_file.url if book.attach_file else None,  # Include the file URL
+            'authors': book.authors,
+            'genre': book.genre,
+            'published_date': book.published_date,
+            'publisher': book.publisher,
+            'description': book.description,
+            'page_count': book.page_count,
+            'material_type': book.material_type,
+        })
+    
+    # Return a JSON response
+    return JsonResponse({'books': book_list})

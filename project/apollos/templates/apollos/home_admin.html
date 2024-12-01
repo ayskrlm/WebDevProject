@@ -423,7 +423,7 @@
                             <div class="form-group">
                                 <label for="edit-attach-file">Attach File</label>
                                 <div class="file-upload-area" id="edit-file-upload-area">
-                                    <p><span class="browse-link">Upload File</span></p>
+                                    <p><asdspan class="browse-link">Upload File</span></p>
                                     <input type="file" id="edit-attach-file" name="attach_file" accept="*" hidden>
                                     <div class="file-preview" id="edit-file-preview"></div>
                                 </div>
@@ -1000,33 +1000,52 @@
             });
         });
 
-        function handleFileSelect(input, previewElement) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    previewElement.style.display = 'block';
-                    previewElement.innerHTML = `<img src="${event.target.result}" alt="${file.name}">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Handle the file input for file upload
+        // Handle the file input for Attach File section
         const fileInput = document.getElementById('attach-file');
         const filePreview = document.getElementById('file-preview');
         fileInput.addEventListener('change', function() {
             handleFileSelect(fileInput, filePreview);
         });
 
-        // Handle the image input for image upload
+        // Handle the image input for Attach Image section
         const imageInput = document.getElementById('attach-image');
         const imagePreview = document.getElementById('image-preview');
         imageInput.addEventListener('change', function() {
             handleFileSelect(imageInput, imagePreview);
         });
-        
-        // Drag & Drop functionality for file upload
+
+        // Handle the file input for Edit Attach File section
+        const editFileInput = document.getElementById('edit-attach-file');
+        const editFilePreview = document.getElementById('edit-file-preview');
+        editFileInput.addEventListener('change', function() {
+            handleFileSelect(editFileInput, editFilePreview);
+        });
+
+        // Handle the image input for Edit Attach Image section
+        const editImageInput = document.getElementById('edit-attach-image');
+        const editImagePreview = document.getElementById('edit-image-preview');
+        editImageInput.addEventListener('change', function() {
+            handleFileSelect(editImageInput, editImagePreview);
+        });
+
+        // Function to handle file/image selection and preview
+        function handleFileSelect(input, previewElement) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewElement.style.display = 'block';
+                    if (file.type.startsWith('image/')) {
+                        previewElement.innerHTML = `<img src="${event.target.result}" alt="${file.name}">`;
+                    } else {
+                        previewElement.innerHTML = `<p>${file.name}</p>`;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Drag & Drop functionality for Attach File section
         const fileUploadArea = document.getElementById('file-upload-area');
         fileUploadArea.addEventListener('dragover', function(event) {
             event.preventDefault();
@@ -1041,25 +1060,17 @@
         fileUploadArea.addEventListener('drop', function(event) {
             event.preventDefault();
             fileUploadArea.classList.remove('dragging');
-            
-            // Get the dropped file(s)
             const files = event.dataTransfer.files;
-            
             if (files.length > 0) {
-                // Select the first file
                 const file = files[0];
-                
-                // Set the file input's files to the dropped files
                 fileInput.files = files;
-                
-                // Handle the file
                 handleFileSelect(fileInput, filePreview);
             } else {
                 alert("No files were dropped.");
             }
         });
 
-        // Drag & Drop functionality for image upload
+        // Drag & Drop functionality for Attach Image section
         const imageUploadArea = document.getElementById('image-upload-area');
         imageUploadArea.addEventListener('dragover', function(event) {
             event.preventDefault();
@@ -1076,16 +1087,62 @@
             const file = event.dataTransfer.files[0];
             if (file) {
                 imageInput.files = event.dataTransfer.files;
-                handleFileSelect(imageInput, imagePreview); }
+                handleFileSelect(imageInput, imagePreview);
+            }
         });
 
-        // Click the browse link to open the file input
+        // Drag & Drop functionality for Edit Attach File section
+        const editFileUploadArea = document.getElementById('edit-file-upload-area');
+        editFileUploadArea.addEventListener('dragover', function(event) {
+            event.preventDefault();
+            editFileUploadArea.classList.add('dragging');
+        });
+
+        editFileUploadArea.addEventListener('dragleave', function() {
+            editFileUploadArea.classList.remove('dragging');
+        });
+
+        editFileUploadArea.addEventListener('drop', function(event) {
+            event.preventDefault();
+            editFileUploadArea.classList.remove('dragging');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                editFileInput.files = files;
+                handleFileSelect(editFileInput, editFilePreview);
+            } else {
+                alert("No files were dropped.");
+            }
+        });
+
+        // Drag & Drop functionality for Edit Attach Image section
+        const editImageUploadArea = document.getElementById('edit-image-upload-area');
+        editImageUploadArea.addEventListener('dragover', function(event) {
+            event.preventDefault();
+            editImageUploadArea.classList.add('dragging');
+        });
+
+        editImageUploadArea.addEventListener('dragleave', function() {
+            editImageUploadArea.classList.remove('dragging');
+        });
+
+        editImageUploadArea.addEventListener('drop', function(event) {
+            event.preventDefault();
+            editImageUploadArea.classList.remove('dragging');
+            const file = event.dataTransfer.files[0];
+            if (file) {
+                editImageInput.files = event.dataTransfer.files;
+                handleFileSelect(editImageInput, editImagePreview);
+            }
+        });
+
+        // Click the browse link to open the file input for Attach File section
         document.querySelectorAll('.browse-link').forEach(function(link) {
             link.addEventListener('click', function() {
                 const input = link.closest('.file-upload-area').querySelector('input[type="file"]');
                 input.click();
             });
-        });    
+        });
 
 
         function cancelAddTitle() {

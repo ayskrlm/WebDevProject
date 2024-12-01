@@ -4,41 +4,29 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 import random
 
-# Custom user model
 class CustomUser(AbstractUser):
+    # You can retain the email field (it's already included by default in AbstractUser, but you can customize it)
     email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)  # This is already part of AbstractUser, so may not be needed
 
     def __str__(self):
         return self.email
 
-
-# UserProfile model
-class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.user.username
-
-    # Method to return initials from the first letter of the email
     def get_initials(self):
         initials = ''
         if self.first_name:
             initials += self.first_name[0].upper()  # First letter of first name
         if self.last_name:
             initials += self.last_name[0].upper()  # First letter of last name
-        return initials or self.user.email[0].upper()  # Fallback to first letter of email if initials are empty
+        return initials or self.email[0].upper()  # Fallback to first letter of email if initials are empty
 
-    # Method to generate a random color
     def get_random_color(self):
         # List of random colors (you can customize this)
         colors = ['#748CAC', '#FF5733', '#33FF57', '#3357FF']
         return random.choice(colors)
-    
-from django.db import models
+
 
 class BookTitle(models.Model):
     STATUS_CHOICES = [

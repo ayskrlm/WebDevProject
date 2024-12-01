@@ -213,6 +213,13 @@ body {
     margin-left: -50px;
 }
 
+.separator2 {
+    border-top: 1px solid #E5E7EB; /* Light gray-blue separator */
+    margin: 15px 0; /* Space before and after the line */
+    width: 100%;
+    
+}
+
 /* Main content styles */
 .main-content {
     margin-left: 0;
@@ -959,3 +966,225 @@ button#next-page:after {
    
 }
 
+/* Book list styling */
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+.book-item {
+   
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    width: 150px;
+}
+
+.book-item:hover {
+    transform: translateY(-10px);
+   
+}
+
+/* Book image styling */
+.book-item img {
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+
+}
+
+.book-item h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden; /* Hides overflowing text */
+    margin-top: 0px;                   /* Displays ellipsis (...) for truncated text */
+    max-width: 120%; /* Ensures the title stays within the container */
+    font-family: Poppins;
+    font-size: 13px;
+    text-overflow: ellipsis;
+}
+
+/* Button styling */
+.book-item button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.book-item button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+
+
+/* Basic modal styling */
+.modal-book {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    padding-top: 60px;
+    transition: opacity 0.3s ease;
+    
+    /* Apply the blur effect to the background */
+    backdrop-filter: blur(5px);  /* Blurring the background */
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
+}
+
+/* Modal content box styling */
+.modal-content-book {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+    max-width: 1000px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column; /* Default to column layout */
+    align-items: center;
+    position: relative;
+}
+
+/* Close button */
+.close-book {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    cursor: pointer;
+}
+
+/* Close button hover effect */
+.close-book:hover,
+.close-book:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal body layout: Flexbox for horizontal content */
+.modal-body {
+    display: flex;
+    flex-direction: row; /* Arrange image and text side by side */
+    gap: 20px; /* Space between image and text */
+    align-items: flex-start; /* Align items at the top */
+    width: 100%; /* Ensure it takes up full width */
+}
+
+.modal-content-book h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 12px;
+    align-self: flex-start; /* Align the title to the left */
+    font-family: Poppins;
+    margin-left: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+/* Image container */
+.modal-image {
+    flex: 1;
+    max-width: 300px; /* Limit image size */
+}
+
+/* Modal image styling */
+#modal-book-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Information container */
+.modal-info {
+    flex: 2;
+    max-width: 600px; /* Limit the width of the information section */
+    font-family: Poppins;
+    width: 300px;
+}
+
+#modal-description {
+    display: block; /* Ensure it behaves like a block element */
+    word-wrap: break-word; /* Break long words to prevent overflow */
+    overflow-y: scroll; /* Make the content scrollable */
+    max-height: 150px; /* Limit the height to make long descriptions scrollable */
+    scrollbar-width: none; /* For Firefox: hide the scrollbar */
+    -ms-overflow-style: none; /* For IE and Edge: hide the scrollbar */
+    text-align: justify;
+}
+
+#modal-book-title2 {
+    display: block; /* Ensure it behaves like a block element */
+    word-wrap: break-word; /* Break long words to prevent overflow */
+    overflow-y: scroll; /* Make the content scrollable */
+    max-height: 150px; /* Limit the height to make long descriptions scrollable */
+    scrollbar-width: none; /* For Firefox: hide the scrollbar */
+    -ms-overflow-style: none; /* For IE and Edge: hide the scrollbar */
+    text-align: justify;
+}
+
+#modal-book-title {
+    display: block; /* Ensures block layout */
+    white-space: nowrap; /* Prevents wrapping */
+    overflow: hidden; /* Hides overflowing text */
+    text-overflow: ellipsis; /* Adds an ellipsis (…) for overflowed text */
+    max-width: 100%; /* Constrains the width */
+}
+
+
+/* For WebKit browsers (e.g., Chrome, Safari) */
+#modal-description::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+/* Add optional styling for the paragraph */
+.modal-info p {
+    margin-bottom: 12px; /* Space between paragraphs */
+    line-height: 1.6; /* Improved readability */
+}
+
+/* Content styling for each field */
+p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+strong {
+    font-weight: bold;
+    color: #333;
+    margin-right: 3px;
+}
+
+
+
+/* Animation for fading in modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

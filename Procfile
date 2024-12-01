@@ -1,1 +1,1 @@
-web: gunicorn apollos.wsgi
+web: gunicorn project.wsgi

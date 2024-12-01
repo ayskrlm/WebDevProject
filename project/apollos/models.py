@@ -57,7 +57,7 @@ class BookTitle(models.Model):
     genre = models.CharField(max_length=100, blank=True, null=True)
     volume = models.CharField(max_length=100, blank=True, null=True)
     authors = models.CharField(max_length=255, blank=True, null=True)
-    standard_numbers = models.CharField(max_length=255, blank=True, null=True)
+    standard_numbers = models.CharField(max_length=255, blank=True, null=False, unique=True)
     publisher = models.CharField(max_length=255, blank=True, null=True)
     published_date = models.DateField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)

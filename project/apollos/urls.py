@@ -20,6 +20,7 @@ urlpatterns = [
     path('add_title/', views.add_title, name='add_title'),
     path('home_admin/', views.home_admin, name='home_admin'),
     path('get-titles/', views.get_book_titles, name='get_book_titles'),
+    path('delete-titles/', views.delete_titles, name='delete_titles'),
     
     
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -20,6 +20,7 @@ from django.contrib.auth import get_user_model, login
 from django.templatetags.static import static
 from email.mime.image import MIMEImage
 from .models import BookTitle
+from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 import os
@@ -292,95 +293,77 @@ def get_book_titles(request):
     for title in titles:
         titles_data.append({
             'name': title.name,
-            'attach_image': title.attach_image.url if title.attach_image else None
+            'attach_image': title.attach_image.url if title.attach_image else None,
+            'attach_file': title.attach_file.url if title.attach_file else None,  # Include file URL
+            'standard_numbers': title.standard_numbers,
+            'authors': title.authors,
+            'date_acquired': title.date_acquired,
         })
     return JsonResponse({'titles': titles_data})
 
 
+
 def add_title(request):
     if request.method == 'POST':
-        if request.headers.get('Content-Type') == 'application/json':
-            data = json.loads(request.body)
-            book_title = data.get('book_title', '').strip()
-            subtitle = data.get('subtitle', '')
-            genre = data.get('genre', '')
-            volume = data.get('volume', '')
-            authors = data.get('authors', '')
-            standard_numbers = data.get('standard_numbers', '')
-            publisher = data.get('publisher', '')
-            published_date = data.get('published_date', '')
-            description = data.get('description', '')
-            page_count = data.get('page_count', '')
-            status = data.get('status', '')
-            num_of_copies = data.get('num_of_copies', '')
-            starting_barcode = data.get('starting_barcode', '')
-            code_number = data.get('code_number', '')
-            material_type = data.get('material_type', '')
-            purchase_price = data.get('purchase_price', '')
-            date_acquired = data.get('date_acquired', '')
-            sub_location = data.get('sub_location', '')
-            vendor = data.get('vendor', '')
-            funding_source = data.get('funding_source', '')
-            note = data.get('note', '')
-            attach_file = data.get('attach_file', None)
-            attach_image = data.get('attach_image', None)
-        else:
-            # Handle normal form submission
-            book_title = request.POST.get('book_title', '').strip()
-            subtitle = request.POST.get('subtitle', '')
-            genre = request.POST.get('genre', '')
-            volume = request.POST.get('volume', '')
-            authors = request.POST.get('authors', '')
-            standard_numbers = request.POST.get('standard_numbers', '')
-            publisher = request.POST.get('publisher', '')
-            published_date = request.POST.get('published_date', '')
-            description = request.POST.get('description', '')
-            page_count = request.POST.get('page_count', '')
-            status = request.POST.get('status', '')
-            num_of_copies = request.POST.get('num_of_copies', '')
-            starting_barcode = request.POST.get('starting_barcode', '')
-            code_number = request.POST.get('code_number', '')
-            material_type = request.POST.get('material_type', '')
-            purchase_price = request.POST.get('purchase_price', '')
-            date_acquired = request.POST.get('date_acquired', '')
-            sub_location = request.POST.get('sub_location', '')
-            vendor = request.POST.get('vendor', '')
-            funding_source = request.POST.get('funding_source', '')
-            note = request.POST.get('note', '')
-            attach_file = request.FILES.get('attach_file', None)
-            attach_image = request.FILES.get('attach_image', None)
+        # Handle form data with files
+        book_title = request.POST.get('book_title', '').strip()
+        subtitle = request.POST.get('subtitle', '')
+        genre = request.POST.get('genre', '')
+        volume = request.POST.get('volume', '')
+        authors = request.POST.get('authors', '')
+        standard_numbers = str(request.POST.get('standard_numbers', '')).strip()
+        publisher = request.POST.get('publisher', '')
+        published_date = request.POST.get('published_date', '')
+        description = request.POST.get('description', '')
+        page_count = request.POST.get('page_count', '')
+        status = request.POST.get('status', '')
+        num_of_copies = request.POST.get('num_of_copies', '')
+        starting_barcode = request.POST.get('starting_barcode', '')
+        code_number = request.POST.get('code_number', '')
+        material_type = request.POST.get('material_type', '')
+        purchase_price = request.POST.get('purchase_price', '')
+        date_acquired = request.POST.get('date_acquired', '')
+        sub_location = request.POST.get('sub_location', '')
+        vendor = request.POST.get('vendor', '')
+        funding_source = request.POST.get('funding_source', '')
+        note = request.POST.get('note', '')
+        attach_file = request.FILES.get('attach_file', None)
+        attach_image = request.FILES.get('attach_image', None)
 
-        # Check if the book title is required and provided
+        # Debugging the standard_numbers value
+        print(f"standard_numbers value: '{standard_numbers}'")
+
+        # Validate required fields
         if not book_title:
             return JsonResponse({'error': 'Book title is required.'}, status=400)
+        if not standard_numbers:
+            return JsonResponse({'error': 'Standard number is required.'}, status=400)
 
-        # Helper function to handle empty numeric fields and convert to None or default
+        # Check if the standard number already exists
+        if BookTitle.objects.filter(standard_numbers=standard_numbers).exists():
+            return JsonResponse({'error': 'Standard number already exists.'}, status=400)
+
+        # Helper function to handle numeric fields
         def handle_numeric_field(field_value, default=None):
             """Helper function to handle numeric fields (either int or float)."""
             if field_value == '' or field_value is None:
                 return default
             try:
-                return int(field_value)  # Or float if needed
+                return float(field_value) if '.' in field_value else int(field_value)
             except ValueError:
                 raise ValueError(f"Invalid value for numeric field: {field_value}")
 
         # Handle numeric fields
         try:
-            page_count = handle_numeric_field(page_count, default=None)  # Convert to int or None
-            num_of_copies = handle_numeric_field(num_of_copies, default=None)  # Convert to int or None
-            purchase_price = handle_numeric_field(purchase_price, default=None)  # Convert to decimal or None
+            page_count = handle_numeric_field(page_count, default=None)
+            num_of_copies = handle_numeric_field(num_of_copies, default=None)
+            purchase_price = handle_numeric_field(purchase_price, default=None)
         except ValueError as e:
             return JsonResponse({'error': str(e)}, status=400)
 
         # Handle date fields (if empty, leave as None)
         published_date = published_date if published_date else None
         date_acquired = date_acquired if date_acquired else None
-
-        # Check if the image or file is provided (debugging)
-        if attach_image:
-            print(f"Image uploaded: {attach_image.name}")
-        if attach_file:
-            print(f"File uploaded: {attach_file.name}")
 
         # Create the BookTitle object
         try:
@@ -415,16 +398,40 @@ def add_title(request):
         # Fetch all book titles after the new one is added
         titles = BookTitle.objects.all()
 
-        if request.headers.get('Content-Type') == 'application/json':
-            titles_data = [{'name': title.name} for title in titles]
-            return JsonResponse({'titles': titles_data})
-
-        # For normal form submission, redirect back to the home admin page
-        return redirect('home_admin')
+        # Return the updated list of titles as JSON
+        titles_data = [{'name': title.name} for title in titles]
+        return JsonResponse({'titles': titles_data})
 
     else:
         # For GET requests, pass the list of titles to the template
         titles = BookTitle.objects.all()
         return render(request, 'apollos/home_admin.html', {'titles': titles})
-    
+def delete_titles(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)  # Get the request data (expected to be in JSON format)
+            standard_numbers = data.get("standard_numbers", [])  # Get list of standard numbers from request data
+            
+            if not standard_numbers:
+                return JsonResponse({"error": "No books selected"}, status=400)
+            
+            # Check if the books with the given standard numbers exist in the database
+            books_to_delete = BookTitle.objects.filter(standard_numbers__in=standard_numbers)
 
+            # If no books were found for the provided standard numbers
+            if not books_to_delete.exists():
+                return JsonResponse({"error": "No books found for the provided standard numbers"}, status=404)
+            
+            # Delete the selected books
+            deleted_count, _ = books_to_delete.delete()
+
+            if deleted_count > 0:
+                return JsonResponse({"success": f"{deleted_count} books deleted successfully"})
+            else:
+                return JsonResponse({"error": "No books were deleted"}, status=400)
+        
+        except Exception as e:
+            # Catch any errors and return as a JSON response
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid HTTP method. Use POST to delete books."}, status=405)

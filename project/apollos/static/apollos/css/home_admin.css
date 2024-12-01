@@ -8,7 +8,7 @@ body {
 .main-header {
     background-color: white;  /* White background */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Soft shadow */
-    padding: 20px;  /* Add padding to give space around the text */
+    padding: 8.5px;  /* Add padding to give space around the text */
     margin-bottom: 20px;  /* Add space below the header */
     text-align: center;  /* Center the text */
     border-radius: 8px;  /* Optional: Add rounded corners */
@@ -59,10 +59,9 @@ body {
 /* General Styles */
 .container {
     display: flex;
-    height: 100vh;
-    overflow: hidden;
+    justify-content: flex-end; /* Align items to the right */
+    margin-top: 10px; /* Optional: add space from the top */
 }
-
 .side-panel {
     width: 0; /* Initially hidden */
     height: 100%;
@@ -224,11 +223,32 @@ body {
 .content-panel {
     display: none;
     margin-top: 20px;
-    margin-left: 30px;
+    margin-left: 30px; /* Adjust this value based on your design */
+    overflow-y: scroll; /* Ensures content is scrollable */
+    padding-right: 10px; /* To avoid text being hidden behind the scroll */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: transparent transparent; /* For Firefox */
 }
 
+.content-panel::-webkit-scrollbar {
+    display: none;/* Hides the scrollbar */
+    background: transparent; /* Optional: hides background of scrollbar */
+}
+
+.content-panel::-webkit-scrollbar-thumb {
+    background: transparent; /* Optional: hides thumb */
+}
+
+/* For Edge and Chrome */
+.content-panel::-webkit-scrollbar {
+    width: 0px; /* Hide the scrollbar */
+}
 .content-panel h2 {
     color: #2c3e50;
+    margin-left: 20px;
+    font-size: 20px;
+    font-family: Poppins;
+    font-weight: bold;
 }
 
 .content-panel p {
@@ -256,7 +276,438 @@ body {
     display: none;
 }
 
+#show-form-btn {
+  float: right;  /* Align the button to the right */
+  margin-top: -50px;
+  margin-right: 20px; /* Optional: add space from the top */  
+  background-color: #748CAC; /* Green */
+  color: white;
+  border: none;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-family: Poppins;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+#show-form-btn:hover {
+  background-color: #526279; /* Darker green */
+}
+
+
+#add-title-form {
+    margin: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #D1D5DB; /* Red border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  
+  
+  #add-title-form label {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 8px;
+    display: block;
+    font-family: Poppins;
+
+  }
+  
+  #add-title-form input[type="text"],
+  #add-title-form input[type="date"],
+  #add-title-form input[type="number"],
+  #add-title-form input[type="file"],
+  #add-title-form select,
+  #add-title-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Poppins;
+    box-sizing: border-box;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Initial shadow */
+  }
+  
+  #add-title-form input[type="text"]:focus,
+  #add-title-form input[type="number"]:focus,
+  #add-title-form textarea:focus,
+  #add-title-form select:focus {
+    border-color: #748CAC;
+    outline: none;
+  }
+  
+  #add-title-form textarea {
+    resize: vertical;
+    min-height: 100px;
+    height: 133px;
+    font-family: Poppins;
+  }
+  
+
+  
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+    min-width: 48%;
+  }
+  
+  .form-row .form-group.full-width {
+    flex: 0 0 100%;
+  }
+  
+  /* Adjustments for smaller screens */
+  @media (max-width: 768px) {
+    .form-row .form-group {
+      flex: 0 0 100%;
+    }
+  }
+  
+/* Style for the Submit Button */
+.add-title-btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-top: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.add-title-btn:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+}
+
+.add-title-btn:focus {
+    outline: none;
+}
+
+/* Style for the Submit Button */
+.add-title-btn {
+    background-color: #748CAC; /* Green */
+    color: white;
+    border: none;
+    font-family: Poppins;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Initial shadow */
+}
+
+.add-title-btn:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.add-title-btn:focus {
+    outline: none;
+}
+
+/* Style for the Cancel Button */
+.cancel-btn {
+    background-color: #ffffff; /* Red */
+    color: rgb(0, 0, 0);
+    border: 1px solid #D1D5DB; /* Red border */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 10px; /* Add space between buttons */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Initial shadow */
+}
+
+.cancel-btn:hover {
+    background-color: #e53935; /* Slightly darker red on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.cancel-btn:focus {
+    outline: none;
+}
+
+/* Optional: Style for the button container */
+.form-row {
+    margin-top: 20px;
+}
+
+
+.required {
+    color: red; /* Make the asterisk red */
+}
+
+
+
+  .file-upload-area {
+    border: 2px dashed #D1D5DB;
+    padding: 20px;
+    text-align: center;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+}
+
+.file-upload-area p {
+    margin: 0;
+    color: #4B5563;
+    font-size: 14px;
+    font-family: Poppins;
+}
+
+.browse-link {
+    color: #4B5563;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.file-preview, .image-preview {
+    margin-top: 15px;
+    display: none;
+    text-align: center;
+}
+
+.file-preview img, .image-preview img {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 5px;
+}
+
+.file-upload-area.dragging {
+    background-color: #e1f9e1;
+    border-color: #45a049;
+}
+
+.file-upload-area.dragging p {
+    color: #45a049;
+}
+
+input[type="file"]:focus {
+    outline: none;
+}
+
+
+
+
+
+
+
+
 /* You can also add some styles to make the transition smoother */
 #add-title-form {
     transition: all 0.3s ease-in-out;
+}
+
+/* Styling for the search input field */
+#search-input {
+    margin-bottom: 20px;
+    padding: 8px;
+    width: 100%;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+
+/* General container styling */
+#title-list {
+    margin: 20px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #D1D5DB; /* Red border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styling */
+#title-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed; /* Makes columns more predictable */
+    word-wrap: break-word;
+    font-family: Poppins;
+    font-size: 12px;
+}
+
+#title-list-table th, #title-list-table td {
+    padding: 12px;
+    text-align: center;
+    text-overflow: ellipsis; /* Adds ellipsis if text overflows */
+    overflow: hidden;        /* Hides overflowing text */
+    word-wrap: break-word;   /* Breaks long words onto the next line */
+    white-space: normal; 
+}
+
+#title-list-table th {
+    background-color: #F9FAFB;
+    color: #4B5563;
+    font-size: 1.1em;
+    text-align: left;
+    border-top: 1px solid #E5E7EB; /* Top stroke */
+    border-bottom: 1px solid #E5E7EB; /* Bottom stroke */
+}
+
+#title-list-table td {
+    background-color: #fff;
+    font-size: 1em;
+}
+
+#title-list-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Image cell styling */
+#title-list-table td {
+    /* No need for text-align: center here, so text remains left-aligned */
+    vertical-align: middle; /* Ensure content is vertically aligned */
+    border-bottom: 1px solid #E5E7EB;
+}
+
+/* Apply styles specifically to images in the table */
+#title-list-table td img {
+    max-width: 77px;     /* Limit the image width */
+    height: auto;         /* Maintain aspect ratio */
+    border-radius: 5px;   /* Add rounded corners */
+    display: block;       /* Make the image a block element (this enables centering) */
+    margin-left: auto;    /* Auto margins to center horizontally */
+    margin-right: auto;   /* Auto margins to center horizontally */
+}
+
+/* Optional: Keep text left-aligned for columns other than images */
+#title-list-table td:not(:has(img)) {
+    text-align: left; /* Ensure text is left-aligned where there is no image */
+}
+
+#title-list-table td img,
+#title-list-table td input[type="checkbox"],
+#title-list-table td button {
+    display: block;         /* Make elements block-level for centering */
+    margin-left: auto;      /* Auto margins to center horizontally */
+    margin-right: auto;     /* Auto margins to center horizontally */
+}
+/* Download link styling */
+#title-list-table td a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#title-list-table td a:hover {
+    text-decoration: underline;
+}
+
+/* Text for unavailable images or files */
+#title-list-table td p {
+    color: #666;
+    font-size: 0.9em;
+}
+
+#title-list-table td:nth-child(3), 
+#title-list-table th:nth-child(3) {
+    max-width: 200px;  /* Set a max width for the column if necessary */
+}
+
+#title-list-table td:nth-child(1), 
+#title-list-table th:nth-child(1) {
+    max-width: 200px;
+    width: 50px;  /* Set a max width for the column if necessary */
+    text-align: center;
+}
+
+#title-list-table td:nth-child(2), 
+#title-list-table th:nth-child(2) {
+    max-width: 200px;
+    width: 80px; 
+    text-align: center /* Set a max width for the column if necessary */
+}
+
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: 300px;
+}
+
+.modal button {
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+#confirm-delete {
+    background-color: red;
+    color: white;
+}
+
+#cancel-delete {
+    background-color: gray;
+    color: white;
+}
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: 300px;
+}
+
+.modal button {
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+#close-success-modal {
+    background-color: green;
+    color: white;
 }

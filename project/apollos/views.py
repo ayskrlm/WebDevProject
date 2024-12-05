@@ -18,13 +18,13 @@ from django.utils.html import strip_tags
 from django.contrib.auth import get_user_model, login
 from django.templatetags.static import static
 from email.mime.image import MIMEImage
-from .models import BookTitle
-
+from .models import BookTitle, FavoriteBook
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 import os
 import json
+from django.views.decorators.csrf import csrf_protect
 
 # Email configuration from settings
 # Make sure you define these in your settings.py
@@ -261,6 +261,8 @@ def get_book_titles(request):
             'standard_numbers': title.standard_numbers,
             'authors': title.authors,
             'date_acquired': title.date_acquired,
+            'status': title.status,
+            
         })
     return JsonResponse({'titles': titles_data})
 
@@ -400,11 +402,7 @@ def delete_titles(request):
     return JsonResponse({"error": "Invalid HTTP method. Use POST to delete books."}, status=405)
 
 
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.core.exceptions import ValidationError
-import json
-from .models import BookTitle
+
 
 def update_title(request):
     if request.method == 'POST':
@@ -558,7 +556,83 @@ def read_online(request):
             'description': book.description,
             'page_count': book.page_count,
             'material_type': book.material_type,
+            'attach_file': book.attach_file.url if book.attach_file else None,
+            'standard_numbers': book.standard_numbers,
         })
     
     # Return a JSON response
     return JsonResponse({'books': book_list})
+
+@csrf_protect
+@login_required
+def save_favorite(request):
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        standard_numbers = data.get('standard_numbers')
+
+        if not standard_numbers:
+            return JsonResponse({'success': False, 'error': 'Standard number is required.'})
+
+        try:
+            book = BookTitle.objects.get(standard_numbers=standard_numbers)
+            # Prevent duplicate favorites
+            favorite, created = FavoriteBook.objects.get_or_create(user=request.user, book=book)
+            if not created:
+                return JsonResponse({'success': False, 'error': 'Book already saved to favorites.'})
+            return JsonResponse({'success': True})
+        except BookTitle.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Book not found.'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+@login_required
+def get_saved_books(request):
+    saved_books = FavoriteBook.objects.filter(user=request.user).select_related('book')
+    books_data = [
+        {
+            'name': favorite.book.name,
+            'standard_numbers': favorite.book.standard_numbers,
+            'authors': favorite.book.authors,
+            'publisher': favorite.book.publisher,
+            'published_date': favorite.book.published_date,
+            'description': favorite.book.description,
+            'page_count': favorite.book.page_count,
+            'status': favorite.book.status,
+            'num_of_copies': favorite.book.num_of_copies,
+            'image_url': favorite.book.attach_image.url if favorite.book.attach_image else None,
+            'file_url': favorite.book.attach_file.url if favorite.book.attach_file else None,
+            'genre': favorite.book.genre,
+            'material_type': favorite.book.material_type,
+            'attach_file': favorite.book.attach_file.url if favorite.book.attach_file else None,
+            
+        }
+        for favorite in saved_books
+    ]
+    return JsonResponse({'success': True, 'saved_books': books_data})
+
+
+@csrf_protect
+@login_required
+def remove_saved_book(request):
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        standard_numbers = data.get('standard_numbers')
+
+        if not standard_numbers:
+            return JsonResponse({'success': False, 'error': 'Standard number is required.'})
+
+        try:
+            favorite = FavoriteBook.objects.get(user=request.user, book__standard_numbers=standard_numbers)
+            favorite.delete()
+            return JsonResponse({'success': True})
+        except FavoriteBook.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Favorite book not found.'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+
+
+
+

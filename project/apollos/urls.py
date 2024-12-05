@@ -25,6 +25,9 @@ urlpatterns = [
     path('get-book-data/<str:standard_number>/', views.get_book_data, name='get_book_data'),
     path('dashboard/', dashboard_user, name='dashboard'),  # URL for FBV
     path('api/active-books/', views.read_online, name='api/active-books/'),
+    path('save-favorite/', views.save_favorite, name='save_favorite'),
+    path('get-saved-books/', views.get_saved_books, name='get_saved_books'),
+    path('remove-saved-book/', views.remove_saved_book, name='remove_saved_book'),
     
 
 

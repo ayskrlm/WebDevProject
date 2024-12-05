@@ -66,3 +66,11 @@ class BookTitle(models.Model):
 
     def __str__(self):
         return self.name
+
+class FavoriteBook(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favorite_books")
+    book = models.ForeignKey(BookTitle, on_delete=models.CASCADE, related_name="favorited_by")
+    added_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.book.name}"

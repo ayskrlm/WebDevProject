@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>APOLLO’S</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'apollos/css/home_admin.css' %}">
@@ -94,6 +95,7 @@
         
             <!-- Read Online Content -->
             <div id="read_online" class="content-panel">
+                <input type="text" id="search-bar" placeholder="Search for books..." />
                 <h2>Read Online</h2>
                 <p>Browse books available to read online:</p>
                 <div id="book-list" class="book-list">
@@ -108,21 +110,14 @@
             <div id="saved" class="content-panel">
                 <h2>Your Saved Books</h2>
                 <p>These are your saved books:</p>
-                <ul>
-                    <li>Book 1 - <button>Remove</button></li>
-                    <li>Book 2 - <button>Remove</button></li>
-                    <!-- Add more saved books -->
-                </ul>
-            </div>
-        
-            <!-- Trending Content -->
-            <div id="read_online" class="content-panel">
-                <h2>Read Online</h2>
-                <p>Browse books available to read online:</p>
-                <div id="book-list" class="book-list">
+                <div id="book-list-fav" class="book-list">
                     <!-- Books will be inserted here by JavaScript -->
                 </div>
             </div>
+            
+            
+        
+            
         
             <!-- Top Borrowed Content -->
             <div id="top_borrowed" class="content-panel">
@@ -196,14 +191,9 @@
                 <h2 id="modal-book-title"></h2>
                 <div class="separator2"></div>
                 <div class="modal-body">
-                    
-                    <!-- Image on the left -->
                     <div class="modal-image">
-                        
                         <img id="modal-book-image" src="" alt="Book Image">
                     </div>
-        
-                    <!-- Information on the right -->
                     <div class="modal-info">
                         <p><strong>Title: </strong> <span id="modal-book-title2"></span></p>
                         <p><strong>Genre: </strong> <span id="modal-genre"></span></p>
@@ -214,13 +204,15 @@
                         <p><strong>Page Count: </strong> <span id="modal-page-count"></span></p>
                         <p><strong>Material Type: </strong> <span id="modal-material-type"></span></p>
                     </div>
-                     
                 </div>
-                <div class="separator2"></div>   
-
-                
+                <div class="separator2"></div>
+                <div class="modal-actions">
+                    <button id="download-file-btn" style="display: none;">Download File</button>
+                    <button id="save-favorite-btn">Save to Favorites</button>
+                </div>
             </div>
         </div>
+        
         
 
 
@@ -259,12 +251,208 @@
         // Fetch books from the API
         // Fetch books from the API
         fetch('/api/active-books/')
+    .then(response => response.json())
+    .then(data => {
+        
+
+        const books = data.books;
+        const bookListContainer = document.getElementById('book-list');  // Ensure you have an element with id 'book-list'
+        const searchBar = document.getElementById('search-bar');  // Get the search bar element
+
+        // Function to display books
+        function displayBooks(filteredBooks) {
+            bookListContainer.innerHTML = '';  // Clear the book list before displaying new results
+
+            if (filteredBooks.length === 0) {
+                // If there are no books, display a message
+                bookListContainer.innerHTML = '<p>No books available to read online at the moment.</p>';
+            } else {
+                // Loop through the books and add them to the page
+                filteredBooks.forEach(book => {
+                    
+
+                    const bookItem = document.createElement('div');
+                    bookItem.classList.add('book-item');
+                    bookItem.dataset.bookInfo = JSON.stringify(book);  // Store book data in the div
+                    const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+                    // Create the book content
+                    const bookImage = document.createElement('img');
+                    // Use a fallback image if no image_url is available
+                    bookImage.src = book.image_url || fallbackImage;  // Path to fallback image
+                    bookImage.alt = book.name;
+
+                    const bookTitle = document.createElement('h3');
+                    bookTitle.textContent = book.name;
+
+                    // Append the elements to the book item
+                    bookItem.appendChild(bookImage);
+                    bookItem.appendChild(bookTitle);
+
+                    // Append the book item to the list container
+                    bookListContainer.appendChild(bookItem);
+
+                    // Add click event to open the modal
+                    bookItem.addEventListener('click', () => {
+                        openModal(book);
+                    });
+                });
+            }
+        }
+
+        // Initial display of all books
+        displayBooks(books);
+
+        // Search functionality
+        searchBar.addEventListener('input', function() {
+            const searchQuery = searchBar.value.toLowerCase();  // Get the search input
+
+            // Filter books based on the search query
+            const filteredBooks = books.filter(book => {
+                // Ensure authors is always an array
+                const authors = Array.isArray(book.authors) ? book.authors : [book.authors];
+
+                // Filter by book name or authors list
+                return book.name.toLowerCase().includes(searchQuery) || 
+                       authors.some(author => author.toLowerCase().includes(searchQuery));
+            });
+
+            // Display the filtered books
+            displayBooks(filteredBooks);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching books:', error);
+    });
+
+        // Function to open the modal and populate it with book data
+        // Function to open the modal and populate it with book data
+        function openModal(book) {
+            console.log("Opening modal with book:", book); // Debug log to ensure function is called
+
+            const modal = document.getElementById('book-modal');
+            if (!modal) {
+                console.error("Modal element not found");
+                return;
+            }
+
+            // Modal elements
+            const modalBookTitle = document.getElementById('modal-book-title');
+            const modalBookTitle2 = document.getElementById('modal-book-title2');
+            const modalBookImage = document.getElementById('modal-book-image');
+            const modalAuthors = document.getElementById('modal-authors');
+            const modalGenre = document.getElementById('modal-genre');
+            const modalPublishedDate = document.getElementById('modal-published-date');
+            const modalPublisher = document.getElementById('modal-publisher');
+            const modalPageCount = document.getElementById('modal-page-count');
+            const modalMaterialType = document.getElementById('modal-material-type');
+            const modalDescription = document.getElementById('modal-description');
+            const downloadFileBtn = document.getElementById('download-file-btn');
+            const saveFavoriteBtn = document.getElementById('save-favorite-btn');
+            const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+            const csrfToken = getCsrfToken();
+
+
+            // Set modal content
+            modalBookTitle.textContent = book.name || "Unknown Title";
+            modalBookTitle2.textContent = book.name || "Unknown Title";
+            modalBookImage.src = book.image_url || fallbackImage;
+
+            const authors = Array.isArray(book.authors) ? book.authors : [book.authors || "Unknown"];
+            modalAuthors.textContent = authors.join(', ');
+
+            modalGenre.textContent = book.genre || "Unknown Genre";
+            modalPublishedDate.textContent = book.published_date || "Unknown Date";
+            modalPublisher.textContent = book.publisher || "Unknown Publisher";
+            modalPageCount.textContent = book.page_count || "Unknown";
+            modalMaterialType.textContent = book.material_type || "Unknown Type";
+            modalDescription.textContent = book.description || "No description available.";
+
+            // Configure the download button
+            if (book.attach_file) {
+                downloadFileBtn.style.display = 'inline-block';
+                downloadFileBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.href = book.attach_file; // File URL
+                    link.download = book.name || 'file'; // Suggested file name
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link); // Clean up after triggering download
+                };
+            } else {
+                downloadFileBtn.style.display = 'none';
+            }
+
+            function getCsrfToken() {
+                const meta = document.querySelector('meta[name="csrf-token"]');
+                if (meta) {
+                    return meta.getAttribute('content');
+                }
+                console.error("CSRF token not found in meta tag.");
+                return null;
+            }
+
+
+            saveFavoriteBtn.onclick = () => {
+                const csrfToken = getCsrfToken();
+                if (!csrfToken) {
+                    alert("CSRF token missing. Unable to save the favorite.");
+                    return;
+                }
+
+                if (!book.standard_numbers) {
+                    alert("Book does not have a standard number.");
+                    return;
+                }
+
+                fetch('/save-favorite/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: JSON.stringify({ standard_numbers: book.standard_numbers }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Book saved to favorites!');
+                        } else {
+                            alert(`Failed to save book: ${data.error || 'Unknown error'}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            };
+
+            // Show the modal
+            modal.style.display = 'block';
+        }
+
+
+        // Function to close the modal
+        document.getElementById('close-modal-book').addEventListener('click', () => {
+            const modal = document.getElementById('book-modal');
+            modal.style.display = 'none';
+        });
+
+        // Close modal if user clicks outside of the modal
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('book-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+
+
+        fetch('/get-saved-books/')
             .then(response => response.json())
             .then(data => {
-                console.log(data);  // Log the data to ensure it's being received
+                
 
-                const books = data.books;
-                const bookListContainer = document.getElementById('book-list');  // Ensure you have an element with id 'book-list'
+                const books = data.saved_books;  // Adjusted to match the updated response key
+                const bookListContainer = document.getElementById('book-list-fav');  // Ensure you have an element with id 'book-list'
 
                 if (books.length === 0) {
                     // If there are no books, display a message
@@ -272,24 +460,36 @@
                 } else {
                     // Loop through the books and add them to the page
                     books.forEach(book => {
-                        console.log(book);  // Log each book to check its properties
+                        
 
                         const bookItem = document.createElement('div');
                         bookItem.classList.add('book-item');
                         bookItem.dataset.bookInfo = JSON.stringify(book);  // Store book data in the div
                         const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+
                         // Create the book content
                         const bookImage = document.createElement('img');
-                        // Use a fallback image if no image_url is available
+                        // Assuming you have a property for image_url in the backend or use a default fallback
                         bookImage.src = book.image_url || fallbackImage;  // Path to fallback image
                         bookImage.alt = book.name;
 
                         const bookTitle = document.createElement('h3');
                         bookTitle.textContent = book.name;
 
+                        // Create authors list (check if book.authors is an array)
+                        const authors = document.createElement('p');
+                        const authorsList = Array.isArray(book.authors) ? book.authors : [book.authors];  // Ensure it's an array
+                        authors.textContent = ``;
+
+                        // Create standard numbers
+                        const standardNumbers = document.createElement('p');
+                        standardNumbers.textContent = ``;
+
                         // Append the elements to the book item
                         bookItem.appendChild(bookImage);
                         bookItem.appendChild(bookTitle);
+                        bookItem.appendChild(authors);
+                        bookItem.appendChild(standardNumbers);
 
                         // Append the book item to the list container
                         bookListContainer.appendChild(bookItem);
@@ -305,53 +505,7 @@
                 console.error('Error fetching books:', error);
             });
 
-        // Function to open the modal and populate it with book data
-        function openModal(book) {
-            const modal = document.getElementById('book-modal');
-            const modalBookTitle = document.getElementById('modal-book-title');
-            const modalBookTitle2 = document.getElementById('modal-book-title2');
-            const modalBookImage = document.getElementById('modal-book-image');
-            const modalAuthors = document.getElementById('modal-authors');
-            const modalGenre = document.getElementById('modal-genre');
-            const modalPublishedDate = document.getElementById('modal-published-date');
-            const modalPublisher = document.getElementById('modal-publisher');
-            const modalPageCount = document.getElementById('modal-page-count');
-            const modalMaterialType = document.getElementById('modal-material-type');
-            const modalDescription = document.getElementById('modal-description');
-            const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
-            // Set modal content
-            modalBookTitle.textContent = book.name;
-            modalBookTitle2.textContent = book.name;
-            modalBookImage.src = book.image_url || fallbackImage;
-            
-            // Check if authors is an array; if not, make it an array or use as is
-            const authors = Array.isArray(book.authors) ? book.authors : [book.authors];
-            modalAuthors.textContent = authors.join(', '); // Join authors with commas
 
-            modalGenre.textContent = book.genre;
-            modalPublishedDate.textContent = book.published_date;
-            modalPublisher.textContent = book.publisher;
-            modalPageCount.textContent = book.page_count;
-            modalMaterialType.textContent = book.material_type;
-            modalDescription.textContent = book.description;
-
-            // Show the modal
-            modal.style.display = 'block';
-        }
-
-        // Function to close the modal
-        document.getElementById('close-modal-book').addEventListener('click', () => {
-            const modal = document.getElementById('book-modal');
-            modal.style.display = 'none';
-        });
-
-        // Close modal if user clicks outside of the modal
-        window.addEventListener('click', (event) => {
-            const modal = document.getElementById('book-modal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
 
 
 

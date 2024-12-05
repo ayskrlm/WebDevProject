@@ -2,6 +2,7 @@
 
 body {
     margin: 0px;
+    background-color: #FDFEFF;
 }
 
 /* Main Header Styling */
@@ -972,6 +973,7 @@ button#next-page:after {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
     justify-items: center;
+    margin-left: 40px;
 }
 
 .book-item {
@@ -1055,7 +1057,7 @@ button#next-page:after {
     padding: 20px;
     border: 1px solid #888;
     width: 70%;
-    max-width: 1000px;
+    max-width: 800px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
@@ -1135,7 +1137,7 @@ button#next-page:after {
 }
 
 #modal-book-title2 {
-    display: block; /* Ensure it behaves like a block element */
+ 
     word-wrap: break-word; /* Break long words to prevent overflow */
     overflow-y: scroll; /* Make the content scrollable */
     max-height: 150px; /* Limit the height to make long descriptions scrollable */

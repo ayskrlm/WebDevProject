@@ -275,6 +275,7 @@
                                     <th>Standard Numbers</th>
                                     <th>Author</th>
                                     <th>Date Added</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -688,6 +689,11 @@
                 const dateAddedTd = document.createElement('td');
                 dateAddedTd.textContent = title.date_acquired || 'N/A';
                 tr.appendChild(dateAddedTd);
+
+                // Date Added Column
+                const statusTd = document.createElement('td');
+                statusTd.textContent = title.status || 'N/A';
+                tr.appendChild(statusTd);
 
                 // Append the row to the table
                 titleListTable.appendChild(tr);

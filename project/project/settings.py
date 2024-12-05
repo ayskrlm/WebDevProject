@@ -45,9 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apollos',
+    'channels',
 
 
 ]
+
+ASGI_APPLICATION = 'apollos.asgi.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -147,5 +150,5 @@ AUTH_USER_MODEL = 'apollos.CustomUser'
 LOGIN_URL = '/login/'
 
 
-SESSION_COOKIE_AGE = 3600  # 1 hour (change this to your desired timeout duration)
+SESSION_COOKIE_AGE = 60 # 1 hour (change this to your desired timeout duration)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

@@ -633,6 +633,22 @@ def remove_saved_book(request):
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 
 
+def dashboard(request):
+    print("Dashboard view is being accessed")  # Add this line
+    
+    # Count active and inactive books
+    active_books_count = BookTitle.objects.filter(status='active').count()
+    inactive_books_count = BookTitle.objects.filter(status='inactive').count()
+    book_count = BookTitle.objects.count()
+    
+    # Count the number of users who are not staff
+    user_count = get_user_model().objects.filter(is_staff=False).count()
 
-
-
+    # Return the data as a JSON response
+    data = {
+        'active_books_count': active_books_count,
+        'inactive_books_count': inactive_books_count,
+        'user_count': user_count,
+        'book_count': book_count
+    }
+    return JsonResponse(data)

@@ -28,6 +28,7 @@ urlpatterns = [
     path('save-favorite/', views.save_favorite, name='save_favorite'),
     path('get-saved-books/', views.get_saved_books, name='get_saved_books'),
     path('remove-saved-book/', views.remove_saved_book, name='remove_saved_book'),
+    path('dashboard-data/', views.dashboard, name='dashboard-data'),
     
 
 

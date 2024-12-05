@@ -25,31 +25,16 @@
                     Dashboard
                 </button>
                 <div class="separator"></div>
-                <button class="panel-item" onclick="togglePanelContent('trending', this)">
-                    <img src="{% static 'apollos/img/TrendingIcon.svg' %}" alt="Trending Icon">
-                    Trending
-                </button>
-                <button class="panel-item" onclick="togglePanelContent('top_borrowed', this)">
-                    <img src="{% static 'apollos/img/TopBorrowedIcon.svg' %}" alt="Borrowed Icon">
-                    Top Borrowed
-                </button>
-                <div class="separator"></div>
-                <button class="panel-item" onclick="togglePanelContent('transaction_history', this)">
-                    <img src="{% static 'apollos/img/TransactionIcon.svg' %}" alt="Transaction Icon">
-                    Transaction History
-                </button>
                 <button id="title-button" class="panel-item" onclick="togglePanelContent('title', this)">
                     <img src="{% static 'apollos/img/TitleIcon.svg' %}" alt="Title Icon">
                     Title
                 </button>
-                <button class="panel-item" onclick="togglePanelContent('registration', this)">
-                    <img src="{% static 'apollos/img/RegistrationIcon.svg' %}" alt="Register Icon">
-                    Registration
+                <button class="panel-item" onclick="togglePanelContent('trending', this)">
+                    <img src="{% static 'apollos/img/TrendingIcon.svg' %}" alt="Trending Icon">
+                    Trending
                 </button>
-                <button class="panel-item" onclick="togglePanelContent('history', this)">
-                    <img src="{% static 'apollos/img/HistoryIcon.svg' %}" alt="History Icon">
-                    History
-                </button>
+                <div class="separator"></div>
+                
             </div>
         </div>
 
@@ -74,21 +59,34 @@
         
 
             <div id="dashboard" class="content-panel">
-                <h2>Dashboard Content</h2>
-                <p>This is where the Dashboard content goes.</p>
+                <h2>Dashboard</h2>
+                <div class="stats">
+                    <div class="stat">
+                        <h3>Active Books</h3>
+                        <p id="active-books-count">Loading...</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Inactive Books</h3>
+                        <p id="inactive-books-count">Loading...</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Total Books</h3>
+                        <p id="book-count">Loading...</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Number of Users</h3>
+                        <p id="user-count">Loading...</p>
+                    </div>
+                </div>
             </div>
+
             <div id="trending" class="content-panel">
-                <h2>Trending Content</h2>
-                <p>This is where the Trending content goes.</p>
+                <h2>Trending</h2>
+                
             </div>
-            <div id="top_borrowed" class="content-panel">
-                <h2>Top Borrowed Content</h2>
-                <p>This is where the Top Borrowed content goes.</p>
-            </div>
-            <div id="transaction_history" class="content-panel">
-                <h2>Transaction History Content</h2>
-                <p>This is where the Transaction History content goes.</p>
-            </div>
+            
+            
+            
             
             <div id="title-container">
                 <div id="title" class="content-panel">
@@ -203,8 +201,15 @@
                             <div class="form-group">
                                 <label for="code_number">Code Number</label>
                                 <input type="text" id="code_number" name="code_number">
+
                                 <label for="material_type">Material Type</label>
-                                <input type="text" id="material_type" name="material_type">
+                                <select id="material_type" name="material_type">
+                                    <option value="active">E-Book</option>
+                                    <option value="inactive">E-Journal</option>
+                                    <option value="inactive">Manuscript</option>
+                                </select>
+
+
                             </div>
                             <div class="form-group">
                                 <label for="note">Note</label>
@@ -899,91 +904,91 @@
         }
 
         // Assuming the table body element is the one you want to modify
-    const titleListTableBody = document.querySelector('#title-list-table tbody');  // Target the tbody of the table
+        const titleListTableBody = document.querySelector('#title-list-table tbody');  // Target the tbody of the table
 
-    fetch("{% url 'add_title' %}", {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
-        },
-        body: formData  // Send FormData directly (no need for JSON.stringify)
-    })
-    .then(response => {
-        if (!response.ok) {
-            // Check if the response status is OK
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        return response.json();  // Parse the response as JSON if it's okay
-    })
-    .then(data => {
-        console.log('Server response:', data);  // Log the server response to debug
+        fetch("{% url 'add_title' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: formData  // Send FormData directly (no need for JSON.stringify)
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Check if the response status is OK
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            return response.json();  // Parse the response as JSON if it's okay
+        })
+        .then(data => {
+            console.log('Server response:', data);  // Log the server response to debug
 
-        if (data.error) {
-            // Display error message if standard number already exists
-            alert(data.error);
-            return;
-        }
+            if (data.error) {
+                // Display error message if standard number already exists
+                alert(data.error);
+                return;
+            }
 
-        if (data.titles) {
-            titleListTableBody.innerHTML = '';  // Clear the current table body
+            if (data.titles) {
+                titleListTableBody.innerHTML = '';  // Clear the current table body
 
-            // Add the updated titles to the table
-            data.titles.forEach(title => {
-                // Create a new row and populate it with title data
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="checkbox" class="select-item"></td>
-                    <td><img src="${title.image_url}" alt="Image" class="title-image"></td>
-                    <td>${title.name}</td>
-                    <td>${title.standard_numbers}</td>
-                    <td>${title.authors}</td>
-                    <td>${title.date_acquired}</td>
-                `;
+                // Add the updated titles to the table
+                data.titles.forEach(title => {
+                    // Create a new row and populate it with title data
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="checkbox" class="select-item"></td>
+                        <td><img src="${title.image_url}" alt="Image" class="title-image"></td>
+                        <td>${title.name}</td>
+                        <td>${title.standard_numbers}</td>
+                        <td>${title.authors}</td>
+                        <td>${title.date_acquired}</td>
+                    `;
 
-                titleListTableBody.appendChild(tr);  // Append the new row to the table body
+                    titleListTableBody.appendChild(tr);  // Append the new row to the table body
+                });
+
+                // Show success modal or alert after adding the title
+                successModal.style.display = 'flex';  // Show the success modal
+
+                // Clear the input fields after adding the title
+                addTitleForm.reset();
+            } else if (data.success) {
+                // If titles aren't returned, show success based on success flag
+                alert("Book title added successfully!");
+            }
+        })
+        .catch(error => {
+            console.error('Error adding title:', error);
+
+            // Check if the error is due to the response being HTML (e.g., login page)
+            if (error.message.includes('SyntaxError')) {
+                alert("The server returned an unexpected response. Please check if you're logged in or check the server logs.");
+            } else {
+                alert("An error occurred while adding the title.");
+            }
+        });
+        });
+
+
+            // Event listener for closing the success modal
+            closeSuccessModalButton.addEventListener('click', function () {
+                successModal.style.display = 'none'; // Close the success modal
             });
 
-            // Show success modal or alert after adding the title
-            successModal.style.display = 'flex';  // Show the success modal
+            // Event listener for the "Title" button to load titles when clicked
+            const titleButton = document.getElementById('title-button');
+            titleButton.addEventListener('click', function () {
+                fetchTitles();
+            });
 
-            // Clear the input fields after adding the title
-            addTitleForm.reset();
-        } else if (data.success) {
-            // If titles aren't returned, show success based on success flag
-            alert("Book title added successfully!");
-        }
-    })
-    .catch(error => {
-        console.error('Error adding title:', error);
-
-        // Check if the error is due to the response being HTML (e.g., login page)
-        if (error.message.includes('SyntaxError')) {
-            alert("The server returned an unexpected response. Please check if you're logged in or check the server logs.");
-        } else {
-            alert("An error occurred while adding the title.");
-        }
-    });
-    });
-
-
-    // Event listener for closing the success modal
-    closeSuccessModalButton.addEventListener('click', function () {
-        successModal.style.display = 'none'; // Close the success modal
-    });
-
-    // Event listener for the "Title" button to load titles when clicked
-    const titleButton = document.getElementById('title-button');
-    titleButton.addEventListener('click', function () {
-        fetchTitles();
-    });
-
-    // Initially populate the title list if the "Title" panel is already visible
-    const titlePanel = document.getElementById('title');
-    if (titlePanel.style.display !== 'none') {
-        fetchTitles();  // Populate titles if the panel is already open on page load
-    }
-});
+            // Initially populate the title list if the "Title" panel is already visible
+            const titlePanel = document.getElementById('title');
+            if (titlePanel.style.display !== 'none') {
+                fetchTitles();  // Populate titles if the panel is already open on page load
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', function () {
             const showFormBtn = document.getElementById('show-form-btn');
@@ -1182,186 +1187,207 @@
 
         // Event listener for the edit button
         document.getElementById('edit-button').addEventListener('click', function() {
-    const selectedStandardNumbers = getSelectedStandardNumbers(); // Implement this as needed
-    if (selectedStandardNumbers.length !== 1) {
-        alert("Please select exactly one book to edit.");
-        return;
-    }
-
-    // Fetch the book data
-    fetch(`/get-book-data/${selectedStandardNumbers[0]}/`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const bookData = data.book;
-
-                // Check if each element exists before trying to set its value
-                console.log("Populating form fields with book data...");
-                
-                // Pre-fill the form fields with the book data
-                const bookTitleField = document.getElementById('edit-book-title');
-                const standardNumbersField = document.getElementById('edit-standard-numbers');
-                if (bookTitleField && standardNumbersField) {
-                    bookTitleField.value = bookData.name;
-                    standardNumbersField.value = bookData.standard_numbers;
-                } else {
-                    console.error("Book Title or Standard Numbers field not found.");
-                }
-
-                const subtitleField = document.getElementById('edit-subtitle');
-                if (subtitleField) subtitleField.value = bookData.subtitle || '';
-                
-                const genreField = document.getElementById('edit-genre');
-                if (genreField) genreField.value = bookData.genre || '';
-                
-                const volumeField = document.getElementById('edit-volume');
-                if (volumeField) volumeField.value = bookData.volume || '';
-                
-                const authorsField = document.getElementById('edit-authors');
-                if (authorsField) authorsField.value = bookData.authors || '';
-
-                const publisherField = document.getElementById('edit-publisher');
-                if (publisherField) publisherField.value = bookData.publisher || '';
-
-                const publishedDateField = document.getElementById('edit-published_date');
-                if (publishedDateField) publishedDateField.value = bookData.published_date || '';
-                
-                const descriptionField = document.getElementById('edit-description');
-                if (descriptionField) descriptionField.value = bookData.description || '';
-                
-                const pageCountField = document.getElementById('edit-page_count');
-                if (pageCountField) pageCountField.value = bookData.page_count || '';
-
-                const statusField = document.getElementById('edit-status');
-                if (statusField) statusField.value = bookData.status || 'active';
-
-                const subLocationField = document.getElementById('edit-sub_location');
-                if (subLocationField) subLocationField.value = bookData.sub_location || 'circulation';
-
-                const numCopiesField = document.getElementById('edit-num_of_copies');
-                if (numCopiesField) numCopiesField.value = bookData.num_of_copies || '';
-                
-                const vendorField = document.getElementById('edit-vendor');
-                if (vendorField) vendorField.value = bookData.vendor || '';
-                
-                const startingBarcodeField = document.getElementById('edit-starting_barcode');
-                if (startingBarcodeField) startingBarcodeField.value = bookData.starting_barcode || '';
-                
-                const fundingSourceField = document.getElementById('edit-funding_source');
-                if (fundingSourceField) fundingSourceField.value = bookData.funding_source || '';
-                
-                const codeNumberField = document.getElementById('edit-code_number');
-                if (codeNumberField) codeNumberField.value = bookData.code_number || '';
-                
-                const materialTypeField = document.getElementById('edit-material_type');
-                if (materialTypeField) materialTypeField.value = bookData.material_type || '';
-                
-                const noteField = document.getElementById('edit-note');
-                if (noteField) noteField.value = bookData.note || '';
-                
-                const dateAcquiredField = document.getElementById('edit-date_acquired');
-                if (dateAcquiredField) dateAcquiredField.value = bookData.date_acquired || '';
-                
-                const purchasePriceField = document.getElementById('edit-purchase_price');
-                if (purchasePriceField) purchasePriceField.value = bookData.purchase_price || '';
-
-                // Show the form
-                document.getElementById('edit-title-form').style.display = 'block';
-            } else {
-                alert("Error fetching book data.");
+            const selectedStandardNumbers = getSelectedStandardNumbers(); // Implement this as needed
+            if (selectedStandardNumbers.length !== 1) {
+                alert("Please select exactly one book to edit.");
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error fetching book data:', error);
-            alert('An error occurred while fetching the book data.');
+
+            // Fetch the book data
+            fetch(`/get-book-data/${selectedStandardNumbers[0]}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const bookData = data.book;
+
+                        // Check if each element exists before trying to set its value
+                        console.log("Populating form fields with book data...");
+                        
+                        // Pre-fill the form fields with the book data
+                        const bookTitleField = document.getElementById('edit-book-title');
+                        const standardNumbersField = document.getElementById('edit-standard-numbers');
+                        if (bookTitleField && standardNumbersField) {
+                            bookTitleField.value = bookData.name;
+                            standardNumbersField.value = bookData.standard_numbers;
+                        } else {
+                            console.error("Book Title or Standard Numbers field not found.");
+                        }
+
+                        const subtitleField = document.getElementById('edit-subtitle');
+                        if (subtitleField) subtitleField.value = bookData.subtitle || '';
+                        
+                        const genreField = document.getElementById('edit-genre');
+                        if (genreField) genreField.value = bookData.genre || '';
+                        
+                        const volumeField = document.getElementById('edit-volume');
+                        if (volumeField) volumeField.value = bookData.volume || '';
+                        
+                        const authorsField = document.getElementById('edit-authors');
+                        if (authorsField) authorsField.value = bookData.authors || '';
+
+                        const publisherField = document.getElementById('edit-publisher');
+                        if (publisherField) publisherField.value = bookData.publisher || '';
+
+                        const publishedDateField = document.getElementById('edit-published_date');
+                        if (publishedDateField) publishedDateField.value = bookData.published_date || '';
+                        
+                        const descriptionField = document.getElementById('edit-description');
+                        if (descriptionField) descriptionField.value = bookData.description || '';
+                        
+                        const pageCountField = document.getElementById('edit-page_count');
+                        if (pageCountField) pageCountField.value = bookData.page_count || '';
+
+                        const statusField = document.getElementById('edit-status');
+                        if (statusField) statusField.value = bookData.status || 'active';
+
+                        const subLocationField = document.getElementById('edit-sub_location');
+                        if (subLocationField) subLocationField.value = bookData.sub_location || 'circulation';
+
+                        const numCopiesField = document.getElementById('edit-num_of_copies');
+                        if (numCopiesField) numCopiesField.value = bookData.num_of_copies || '';
+                        
+                        const vendorField = document.getElementById('edit-vendor');
+                        if (vendorField) vendorField.value = bookData.vendor || '';
+                        
+                        const startingBarcodeField = document.getElementById('edit-starting_barcode');
+                        if (startingBarcodeField) startingBarcodeField.value = bookData.starting_barcode || '';
+                        
+                        const fundingSourceField = document.getElementById('edit-funding_source');
+                        if (fundingSourceField) fundingSourceField.value = bookData.funding_source || '';
+                        
+                        const codeNumberField = document.getElementById('edit-code_number');
+                        if (codeNumberField) codeNumberField.value = bookData.code_number || '';
+                        
+                        const materialTypeField = document.getElementById('edit-material_type');
+                        if (materialTypeField) materialTypeField.value = bookData.material_type || '';
+                        
+                        const noteField = document.getElementById('edit-note');
+                        if (noteField) noteField.value = bookData.note || '';
+                        
+                        const dateAcquiredField = document.getElementById('edit-date_acquired');
+                        if (dateAcquiredField) dateAcquiredField.value = bookData.date_acquired || '';
+                        
+                        const purchasePriceField = document.getElementById('edit-purchase_price');
+                        if (purchasePriceField) purchasePriceField.value = bookData.purchase_price || '';
+
+                        // Show the form
+                        document.getElementById('edit-title-form').style.display = 'block';
+                    } else {
+                        alert("Error fetching book data.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching book data:', error);
+                    alert('An error occurred while fetching the book data.');
+                });
         });
-});
 
-document.getElementById('edit-title-form').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent the form from submitting normally
+        document.getElementById('edit-title-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the form from submitting normally
 
-    const formData = new FormData(this);
+            const formData = new FormData(this);
 
-    fetch("{% url 'update_title' %}", {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,  // CSRF Token from form
-        },
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            fetch("{% url 'update_title' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,  // CSRF Token from form
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert("Book title updated successfully!");
+
+                    // Call the function to update the table row with new data
+                    updateTableRow(data.updatedTitle);  // Make sure this function is defined
+                } else {
+                    alert("Book title updated successfully!");
+                }
+            })
+            .catch(error => {
+                console.error('Error updating title:', error);
+                alert("An error occurred while updating the title.");
+            });
+        });
+
+        async function fetchDashboardData() {
+                try {
+                    const response = await fetch('/dashboard-data/');
+                    const data = await response.json();
+
+                    // Update the HTML elements with the data from the API
+                    document.getElementById('active-books-count').textContent = data.active_books_count;
+                    document.getElementById('inactive-books-count').textContent = data.inactive_books_count;
+                    document.getElementById('user-count').textContent = data.user_count;
+                    document.getElementById('book-count').textContent = data.book_count;
+                } catch (error) {
+                    console.error('Error fetching dashboard data:', error);
+                }
+            }
+
+            // Call the function to fetch the data when the page is loaded
+            window.onload = fetchDashboardData;
+
+
+        // Function to close the modal
+        function cancelEditTitle() {
+            // Get the form element by ID
+            var form = document.getElementById('edit-title-form');
+            
+            // Hide the form by setting its display style to 'none'
+            form.style.display = 'none';
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            alert("Book title updated successfully!");
 
-            // Call the function to update the table row with new data
-            updateTableRow(data.updatedTitle);  // Make sure this function is defined
-        } else {
-            alert("Book title updated successfully!");
+
+        // Helper function to get selected standard numbers from the table
+        function getSelectedStandardNumbers() {
+            const selectedCheckboxes = document.querySelectorAll('.title-checkbox:checked');
+            return Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.standardNumber);
         }
-    })
-    .catch(error => {
-        console.error('Error updating title:', error);
-        alert("An error occurred while updating the title.");
-    });
-});
 
 
-// Function to close the modal
-function cancelEditTitle() {
-    // Get the form element by ID
-    var form = document.getElementById('edit-title-form');
-    
-    // Hide the form by setting its display style to 'none'
-    form.style.display = 'none';
-}
 
+        // Update the table row (implement this function to reflect changes in the UI)
+        function updateTableRow(updatedTitle) {
+            const row = document.querySelector(`tr[data-standard-number="${updatedTitle.standard_numbers}"]`);
+            if (row) {
+                row.querySelector('.title').textContent = updatedTitle.name;
+                row.querySelector('.standard-number').textContent = updatedTitle.standard_numbers;
+                row.querySelector('.subtitle').textContent = updatedTitle.subtitle;
+                row.querySelector('.genre').textContent = updatedTitle.genre;
+                row.querySelector('.volume').textContent = updatedTitle.volume;
+                row.querySelector('.authors').textContent = updatedTitle.authors;
+                row.querySelector('.publisher').textContent = updatedTitle.publisher;
+                row.querySelector('.published_date').textContent = updatedTitle.published_date;
+                row.querySelector('.description').textContent = updatedTitle.description;
+                row.querySelector('.page_count').textContent = updatedTitle.page_count;
+                row.querySelector('.status').textContent = updatedTitle.status;
+                row.querySelector('.sub_location').textContent = updatedTitle.sub_location;
+                row.querySelector('.num_of_copies').textContent = updatedTitle.num_of_copies;
+                row.querySelector('.vendor').textContent = updatedTitle.vendor;
+                row.querySelector('.starting_barcode').textContent = updatedTitle.starting_barcode;
+                row.querySelector('.funding_source').textContent = updatedTitle.funding_source;
+                row.querySelector('.code_number').textContent = updatedTitle.code_number;
+                row.querySelector('.material_type').textContent = updatedTitle.material_type;
+                row.querySelector('.note').textContent = updatedTitle.note;
+                row.querySelector('.date_acquired').textContent = updatedTitle.date_acquired;
+                row.querySelector('.purchase_price').textContent = updatedTitle.purchase_price;
 
-// Helper function to get selected standard numbers from the table
-function getSelectedStandardNumbers() {
-    const selectedCheckboxes = document.querySelectorAll('.title-checkbox:checked');
-    return Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.standardNumber);
-}
+                // Update other fields as necessary
+            }
 
-// Initially fetch titles
-fetchTitles();
+            // Initially fetch titles
+        fetchTitles();
+        }
 
-// Update the table row (implement this function to reflect changes in the UI)
-function updateTableRow(updatedTitle) {
-    const row = document.querySelector(`tr[data-standard-number="${updatedTitle.standard_numbers}"]`);
-    if (row) {
-        row.querySelector('.title').textContent = updatedTitle.name;
-        row.querySelector('.standard-number').textContent = updatedTitle.standard_numbers;
-        row.querySelector('.subtitle').textContent = updatedTitle.subtitle;
-        row.querySelector('.genre').textContent = updatedTitle.genre;
-        row.querySelector('.volume').textContent = updatedTitle.volume;
-        row.querySelector('.authors').textContent = updatedTitle.authors;
-        row.querySelector('.publisher').textContent = updatedTitle.publisher;
-        row.querySelector('.published_date').textContent = updatedTitle.published_date;
-        row.querySelector('.description').textContent = updatedTitle.description;
-        row.querySelector('.page_count').textContent = updatedTitle.page_count;
-        row.querySelector('.status').textContent = updatedTitle.status;
-        row.querySelector('.sub_location').textContent = updatedTitle.sub_location;
-        row.querySelector('.num_of_copies').textContent = updatedTitle.num_of_copies;
-        row.querySelector('.vendor').textContent = updatedTitle.vendor;
-        row.querySelector('.starting_barcode').textContent = updatedTitle.starting_barcode;
-        row.querySelector('.funding_source').textContent = updatedTitle.funding_source;
-        row.querySelector('.code_number').textContent = updatedTitle.code_number;
-        row.querySelector('.material_type').textContent = updatedTitle.material_type;
-        row.querySelector('.note').textContent = updatedTitle.note;
-        row.querySelector('.date_acquired').textContent = updatedTitle.date_acquired;
-        row.querySelector('.purchase_price').textContent = updatedTitle.purchase_price;
-
-        // Update other fields as necessary
-    }
-}
-
-
+        // Function to fetch the data from the Django view and update the dashboard
+        
 
 
     </script>

@@ -38,27 +38,8 @@
                     <img src="{% static 'apollos/img/TrendingIcon.svg' %}" alt="Trending Icon">
                     Trending
                 </button>
-                <button class="panel-item" onclick="togglePanelContent('top_borrowed', this)">
-                    <img src="{% static 'apollos/img/TopBorrowedIcon.svg' %}" alt="Borrowed Icon">
-                    Top Borrowed
-                </button>
                 <div class="separator"></div>
-                <button class="panel-item" onclick="togglePanelContent('reservations', this)">
-                    <img src="{% static 'apollos/img/ReservationIcon.svg' %}" alt="Reservations Icon">
-                    Reservations
-                </button>
-                <button class="panel-item" onclick="togglePanelContent('for_returns', this)">
-                    <img src="{% static 'apollos/img/ForReturnIcon.svg' %}" alt="Return Icon">
-                    For Returns
-                </button>
-                <button class="panel-item" onclick="togglePanelContent('for_pickup', this)">
-                    <img src="{% static 'apollos/img/ForPickUpIcon.svg' %}" alt="Pickup Icon">
-                    For Pick Up
-                </button>
-                <button class="panel-item" onclick="togglePanelContent('all_transactions', this)">
-                    <img src="{% static 'apollos/img/AllTransactionIcon.svg' %}" alt="Transactions Icon">
-                    All Transactions 
-                </button>
+                
             </div>
         </div>
 
@@ -118,70 +99,7 @@
             
         
             
-        
-            <!-- Top Borrowed Content -->
-            <div id="top_borrowed" class="content-panel">
-                <h2>Top Borrowed Books</h2>
-                <ul>
-                    <li>Book 1 - Borrowed 50 times</li>
-                    <li>Book 2 - Borrowed 40 times</li>
-                    <!-- Add more top borrowed books -->
-                </ul>
-            </div>
-        
-            <!-- Reservations Content -->
-            <div id="reservations" class="content-panel">
-                <h2>Your Reservations</h2>
-                <ul>
-                    <li>Book 1 - Reserved for 5 days</li>
-                    <li>Book 2 - Reserved for 3 days</li>
-                    <!-- Add more reservations -->
-                </ul>
-            </div>
-        
-            <!-- For Returns Content -->
-            <div id="for_returns" class="content-panel">
-                <h2>Books for Return</h2>
-                <ul>
-                    <li>Book 1 - Due for return in 2 days</li>
-                    <li>Book 2 - Due for return in 3 days</li>
-                    <!-- Add more books for return -->
-                </ul>
-            </div>
-        
-            <!-- For Pick Up Content -->
-            <div id="for_pickup" class="content-panel">
-                <h2>Books Ready for Pickup</h2>
-                <ul>
-                    <li>Book 1 - Ready for pickup</li>
-                    <li>Book 2 - Ready for pickup</li>
-                    <!-- Add more books ready for pickup -->
-                </ul>
-            </div>
-        
-            <!-- All Transactions Content -->
-            <div id="all_transactions" class="content-panel">
-                <h2>All Transactions</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Transaction ID</th>
-                            <th>Book Title</th>
-                            <th>Type</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>TX001</td>
-                            <td>Book 1</td>
-                            <td>Borrowed</td>
-                            <td>2024-11-25</td>
-                        </tr>
-                        <!-- Add more transactions -->
-                    </tbody>
-                </table>
-            </div>
+
         
         </div> 
 
@@ -209,6 +127,35 @@
                 <div class="modal-actions">
                     <button id="download-file-btn" style="display: none;">Download File</button>
                     <button id="save-favorite-btn">Save to Favorites</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="book-modal-fav" class="modal-book">
+            <div class="modal-content-book">
+                <span id="close-modal-book-fav" class="close-book">&times;</span>
+                <h2 id="modal-book-title-fav2"></h2>
+                <div class="separator2"></div>
+                <div class="modal-body">
+                    <div class="modal-image">
+                        <img id="modal-book-image-fav" src="" alt="Book Image">
+                    </div>
+                    <div class="modal-info">
+                        <p><strong>Title: </strong> <span id="modal-book-title-fav"></span></p>
+                        <p><strong>Genre: </strong> <span id="modal-genre-fav"></span></p>
+                        <p><strong>Author/s: </strong> <span id="modal-authors-fav"></span></p>
+                        <p><strong>Publisher: </strong> <span id="modal-publisher-fav"></span></p>
+                        <p><strong>Published Date: </strong> <span id="modal-published-date-fav"></span></p>
+                        <p><strong>Description: </strong> <span id="modal-description-fav"></span></p>
+                        <p><strong>Page Count: </strong> <span id="modal-page-count-fav"></span></p>
+                        <p><strong>Material Type: </strong> <span id="modal-material-type-fav"></span></p>
+                    </div>
+                </div>
+                <div class="separator2"></div>
+                <div class="modal-actions">
+                    <button id="download-file-btn-fav" style="display: none;">Download File</button>
+                    <button id="remove-favorite-btn" class="remove-btn">Remove from Favorites</button>
                 </div>
             </div>
         </div>
@@ -247,82 +194,99 @@
             clickedButton.classList.add('highlighted');
         }
 
+        // Toggle the side panel visibility
+        document.getElementById('toggle-button').addEventListener('click', function() {
+            const sidePanel = document.getElementById('side-panel');
+            sidePanel.classList.toggle('open'); // Toggle the 'open' class to animate the panel
+            sidePanel.classList.toggle('collapsed'); // Toggle the 'collapsed' state
+        });
+
 
         // Fetch books from the API
         // Fetch books from the API
         fetch('/api/active-books/')
-    .then(response => response.json())
-    .then(data => {
-        
+            .then(response => response.json())
+            .then(data => {
+                const books = data.books;
+                const bookListContainer = document.getElementById('book-list');  // Ensure you have an element with id 'book-list'
+                const searchBar = document.getElementById('search-bar');  // Get the search bar element
 
-        const books = data.books;
-        const bookListContainer = document.getElementById('book-list');  // Ensure you have an element with id 'book-list'
-        const searchBar = document.getElementById('search-bar');  // Get the search bar element
+                // Function to display books
+                function displayBooks(filteredBooks) {
+                    bookListContainer.innerHTML = '';  // Clear the book list before displaying new results
 
-        // Function to display books
-        function displayBooks(filteredBooks) {
-            bookListContainer.innerHTML = '';  // Clear the book list before displaying new results
+                    if (filteredBooks.length === 0) {
+                        // If there are no books, display a message
+                        bookListContainer.innerHTML = '<p>No books available to read online at the moment.</p>';
+                    } else {
+                        // Loop through the books and add them to the page
+                        filteredBooks.forEach(book => {
 
-            if (filteredBooks.length === 0) {
-                // If there are no books, display a message
-                bookListContainer.innerHTML = '<p>No books available to read online at the moment.</p>';
-            } else {
-                // Loop through the books and add them to the page
-                filteredBooks.forEach(book => {
-                    
+                            const bookItem = document.createElement('div');
+                            bookItem.classList.add('book-item');
+                            bookItem.dataset.bookInfo = JSON.stringify(book);  // Store book data in the div
+                            const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+                            // Create the book content
+                            const bookImage = document.createElement('img');
+                            // Use a fallback image if no image_url is available
+                            bookImage.src = book.image_url || fallbackImage;  // Path to fallback image
+                            bookImage.alt = book.name;
 
-                    const bookItem = document.createElement('div');
-                    bookItem.classList.add('book-item');
-                    bookItem.dataset.bookInfo = JSON.stringify(book);  // Store book data in the div
-                    const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
-                    // Create the book content
-                    const bookImage = document.createElement('img');
-                    // Use a fallback image if no image_url is available
-                    bookImage.src = book.image_url || fallbackImage;  // Path to fallback image
-                    bookImage.alt = book.name;
+                            const bookTitle = document.createElement('h3');
+                            bookTitle.textContent = book.name;
 
-                    const bookTitle = document.createElement('h3');
-                    bookTitle.textContent = book.name;
+                            const bookAuthor = document.createElement('h3');
+                            bookAuthor.textContent = book.authors;
+                            bookAuthor.style.display = 'none';
 
-                    // Append the elements to the book item
-                    bookItem.appendChild(bookImage);
-                    bookItem.appendChild(bookTitle);
+                            const bookGenre = document.createElement('h3');
+                            bookGenre.textContent = book.genre;
+                            bookGenre.style.display = 'none';
 
-                    // Append the book item to the list container
-                    bookListContainer.appendChild(bookItem);
+                            // Append the elements to the book item
+                            bookItem.appendChild(bookImage);
+                            bookItem.appendChild(bookTitle);
+                            bookItem.appendChild(bookAuthor);
+                            bookItem.appendChild(bookGenre);
 
-                    // Add click event to open the modal
-                    bookItem.addEventListener('click', () => {
-                        openModal(book);
+                            // Append the book item to the list container
+                            bookListContainer.appendChild(bookItem);
+
+                            // Add click event to open the modal
+                            bookItem.addEventListener('click', () => {
+                                openModal(book);
+                            });
+                        });
+                    }
+                }
+
+                // Initial display of all books
+                displayBooks(books);
+
+                // Search functionality
+                searchBar.addEventListener('input', function() {
+                    const searchQuery = searchBar.value.toLowerCase();  // Get the search input
+
+                    // Filter books based on the search query, including name, authors, and genre
+                    const filteredBooks = books.filter(book => {
+                        // Ensure authors is always an array
+                        const authors = Array.isArray(book.authors) ? book.authors : [book.authors];
+
+                        // Check if the search query matches book name, authors, or genre
+                        return book.name.toLowerCase().includes(searchQuery) || 
+                            authors.some(author => author.toLowerCase().includes(searchQuery)) ||
+                            book.genre.toLowerCase().includes(searchQuery);  // Include genre in the search
+                            book.material_type.toLowerCase().includes(searchQuery);
                     });
+
+                    // Display the filtered books
+                    displayBooks(filteredBooks);
                 });
-            }
-        }
-
-        // Initial display of all books
-        displayBooks(books);
-
-        // Search functionality
-        searchBar.addEventListener('input', function() {
-            const searchQuery = searchBar.value.toLowerCase();  // Get the search input
-
-            // Filter books based on the search query
-            const filteredBooks = books.filter(book => {
-                // Ensure authors is always an array
-                const authors = Array.isArray(book.authors) ? book.authors : [book.authors];
-
-                // Filter by book name or authors list
-                return book.name.toLowerCase().includes(searchQuery) || 
-                       authors.some(author => author.toLowerCase().includes(searchQuery));
+            })
+            .catch(error => {
+                console.error('Error fetching books:', error);
             });
 
-            // Display the filtered books
-            displayBooks(filteredBooks);
-        });
-    })
-    .catch(error => {
-        console.error('Error fetching books:', error);
-    });
 
         // Function to open the modal and populate it with book data
         // Function to open the modal and populate it with book data
@@ -449,54 +413,40 @@
         fetch('/get-saved-books/')
             .then(response => response.json())
             .then(data => {
-                
-
-                const books = data.saved_books;  // Adjusted to match the updated response key
-                const bookListContainer = document.getElementById('book-list-fav');  // Ensure you have an element with id 'book-list'
+                const books = data.saved_books; 
+                const bookListContainer = document.getElementById('book-list-fav');
 
                 if (books.length === 0) {
-                    // If there are no books, display a message
                     bookListContainer.innerHTML = '<p>No books available to read online at the moment.</p>';
                 } else {
-                    // Loop through the books and add them to the page
                     books.forEach(book => {
-                        
-
                         const bookItem = document.createElement('div');
                         bookItem.classList.add('book-item');
-                        bookItem.dataset.bookInfo = JSON.stringify(book);  // Store book data in the div
+                        bookItem.dataset.bookInfo = JSON.stringify(book);
                         const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
 
-                        // Create the book content
                         const bookImage = document.createElement('img');
-                        // Assuming you have a property for image_url in the backend or use a default fallback
-                        bookImage.src = book.image_url || fallbackImage;  // Path to fallback image
+                        bookImage.src = book.image_url || fallbackImage;
                         bookImage.alt = book.name;
 
                         const bookTitle = document.createElement('h3');
                         bookTitle.textContent = book.name;
 
-                        // Create authors list (check if book.authors is an array)
                         const authors = document.createElement('p');
-                        const authorsList = Array.isArray(book.authors) ? book.authors : [book.authors];  // Ensure it's an array
-                        authors.textContent = ``;
+                        authors.textContent = '';
 
-                        // Create standard numbers
                         const standardNumbers = document.createElement('p');
-                        standardNumbers.textContent = ``;
+                        standardNumbers.textContent = '';
 
-                        // Append the elements to the book item
                         bookItem.appendChild(bookImage);
                         bookItem.appendChild(bookTitle);
                         bookItem.appendChild(authors);
                         bookItem.appendChild(standardNumbers);
 
-                        // Append the book item to the list container
                         bookListContainer.appendChild(bookItem);
 
-                        // Add click event to open the modal
                         bookItem.addEventListener('click', () => {
-                            openModal(book);
+                            openModalSaved(book);
                         });
                     });
                 }
@@ -505,6 +455,116 @@
                 console.error('Error fetching books:', error);
             });
 
+
+
+    function openModalSaved(book) {
+        console.log("Opening modal with book:", book);
+
+        const modal = document.getElementById('book-modal-fav');
+        if (!modal) {
+            console.error("Modal element not found");
+            return;
+        }
+
+        const modalBookTitle = document.getElementById('modal-book-title-fav2');
+        const modalBookTitle2 = document.getElementById('modal-book-title-fav');
+        const modalBookImage = document.getElementById('modal-book-image-fav');
+        const modalAuthors = document.getElementById('modal-authors-fav');
+        const modalGenre = document.getElementById('modal-genre-fav');
+        const modalPublishedDate = document.getElementById('modal-published-date-fav');
+        const modalPublisher = document.getElementById('modal-publisher-fav');
+        const modalPageCount = document.getElementById('modal-page-count-fav');
+        const modalMaterialType = document.getElementById('modal-material-type-fav');
+        const modalDescription = document.getElementById('modal-description-fav');
+        const downloadFileBtn = document.getElementById('download-file-btn-fav');
+        const saveFavoriteBtn = document.getElementById('save-favorite-btn');
+        const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+
+        modalBookTitle.textContent = book.name || "Unknown Title";
+        modalBookTitle2.textContent = book.name || "Unknown Title";
+        modalBookImage.src = book.image_url || fallbackImage;
+
+        const authors = Array.isArray(book.authors) ? book.authors : [book.authors || "Unknown"];
+        modalAuthors.textContent = authors.join(', ');
+
+        modalGenre.textContent = book.genre || "Unknown Genre";
+        modalPublishedDate.textContent = book.published_date || "Unknown Date";
+        modalPublisher.textContent = book.publisher || "Unknown Publisher";
+        modalPageCount.textContent = book.page_count || "Unknown";
+        modalMaterialType.textContent = book.material_type || "Unknown Type";
+        modalDescription.textContent = book.description || "No description available.";
+
+        if (book.attach_file) {
+            downloadFileBtn.style.display = 'inline-block';
+            downloadFileBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.href = book.attach_file;
+                link.download = book.name || 'file';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+        } else {
+            downloadFileBtn.style.display = 'none';
+        }
+
+        const removeFavoriteBtn = document.getElementById('remove-favorite-btn');
+        if (removeFavoriteBtn) {
+            removeFavoriteBtn.onclick = () => {
+                fetch('/remove-saved-book/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is available
+                    },
+                    body: JSON.stringify({ standard_numbers: book.standard_numbers })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Book removed from saved books.');
+                            modal.style.display = 'none';
+                            window.location.reload();
+                        } else {
+                            alert(data.error || 'Failed to remove the book.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while removing the book.');
+                    });
+            };
+        }
+        
+
+        modal.style.display = 'block';
+
+        document.getElementById('close-modal-book-fav').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Check if this cookie string begins with the name we want
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }    
 
 
 

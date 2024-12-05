@@ -1118,6 +1118,13 @@ button#next-page:after {
     border-radius: 8px;
 }
 
+/* Modal image styling */
+#modal-book-image-fav {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
 /* Information container */
 .modal-info {
     flex: 2;
@@ -1127,6 +1134,16 @@ button#next-page:after {
 }
 
 #modal-description {
+    display: block; /* Ensure it behaves like a block element */
+    word-wrap: break-word; /* Break long words to prevent overflow */
+    overflow-y: scroll; /* Make the content scrollable */
+    max-height: 150px; /* Limit the height to make long descriptions scrollable */
+    scrollbar-width: none; /* For Firefox: hide the scrollbar */
+    -ms-overflow-style: none; /* For IE and Edge: hide the scrollbar */
+    text-align: justify;
+}
+
+#modal-description-fav {
     display: block; /* Ensure it behaves like a block element */
     word-wrap: break-word; /* Break long words to prevent overflow */
     overflow-y: scroll; /* Make the content scrollable */
@@ -1189,4 +1206,36 @@ strong {
     to {
         opacity: 1;
     }
+}
+
+
+.stats {
+    display: flex;
+    gap: 20px;
+    justify-content: space-around;
+}
+
+.stat {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    width: 150px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: #333;
+    font-family: Poppins;
+}
+
+.stat p {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #748CAC;
+    font-family: Poppins;
 }

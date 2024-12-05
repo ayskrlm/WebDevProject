@@ -2,6 +2,8 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.shortcuts import render
+from django.contrib.auth import get_user_model
 import random
 
 class CustomUser(AbstractUser):
@@ -40,6 +42,13 @@ class BookTitle(models.Model):
         ('floor2', 'Floor 2'),
     ]
 
+    MATERIAL_TYPE_CHOICES = [
+        ('e-Book', 'E-Book'),
+        ('e-Journal', 'E-Journal'),
+        ('manuscript', 'Manuscript'),
+    
+    ]
+
     name = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     genre = models.CharField(max_length=100, blank=True, null=True)
@@ -54,7 +63,7 @@ class BookTitle(models.Model):
     num_of_copies = models.IntegerField(blank=True, null=True)
     starting_barcode = models.CharField(max_length=100, blank=True, null=True)
     code_number = models.CharField(max_length=100, blank=True, null=True)
-    material_type = models.CharField(max_length=100, blank=True, null=True)
+    material_type = models.CharField(max_length=100, choices=MATERIAL_TYPE_CHOICES, blank=True, null=True)
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     date_acquired = models.DateField(blank=True, null=True)
     sub_location = models.CharField(max_length=20, choices=SUB_LOCATION_CHOICES, blank=True, null=True)
@@ -74,3 +83,5 @@ class FavoriteBook(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.book.name}"
+    
+

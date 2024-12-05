@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-gfxlvs4ibb+sy&#7^nv29yl$a4ou)&ombqnbrx174@e7*wn9be
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.railway.app']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://b8b8-131-226-101-191.ngrok-free.app',  # Your ngrok URL

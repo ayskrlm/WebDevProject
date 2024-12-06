@@ -258,7 +258,7 @@
                     <!-- List of titles will be displayed here -->
                     <div id="title-list">
                         <!-- Search Input -->
-                        <input type="text" id="search-input" placeholder="Search by Title...">
+                        <input type="text" id="search-input" placeholder="Search">
                         <button id="delete-button">Delete</button>
                         <button id="edit-button">Edit</button>
                         <!-- Dropdown for pagination -->
@@ -629,17 +629,27 @@
         function renderTable() {
             console.log("Rendering table..."); // Debugging line to ensure renderTable is being called
 
-            // Filter titles based on the search term
-            const filteredTitles = titles.filter(title => title.name.toLowerCase().includes(searchTerm.toLowerCase()));
-            
+            // Convert search term to lowercase for case-insensitive search
+            const lowerSearchTerm = searchTerm.toLowerCase();
+
+            // Filter titles based on name, author, standard number, or status
+            const filteredTitles = titles.filter(title => {
+                const nameMatch = title.name.toLowerCase().includes(lowerSearchTerm);
+                const authorMatch = title.authors && title.authors.toLowerCase().includes(lowerSearchTerm);
+                const standardNumberMatch = title.standard_numbers && title.standard_numbers.toLowerCase().includes(lowerSearchTerm);
+                const statusMatch = title.status && title.status.toLowerCase().includes(lowerSearchTerm);
+
+                return nameMatch || authorMatch || standardNumberMatch || statusMatch;
+            });
+
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = Math.min(startIndex + itemsPerPage, filteredTitles.length);
             const titlesToRender = filteredTitles.slice(startIndex, endIndex);
 
-            titleListTable.innerHTML = '';  // Clear current table body
+            titleListTable.innerHTML = ''; // Clear current table body
 
             if (titlesToRender.length === 0) {
-                titleListTable.innerHTML = '<tr><td colspan="6">No books found.</td></tr>'; // Display a message if no books match
+                titleListTable.innerHTML = '<tr><td colspan="7">No books found.</td></tr>'; // Update colspan to match number of columns
             }
 
             titlesToRender.forEach(title => {
@@ -650,8 +660,8 @@
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.classList.add('title-checkbox');
-                checkbox.dataset.standardNumber = title.standard_numbers;  // Store the standard number in data attribute
-                checkbox.value = title.id;  // Assuming `title.id` is the unique identifier for the book
+                checkbox.dataset.standardNumber = title.standard_numbers; // Store the standard number in data attribute
+                checkbox.value = title.id; // Assuming `title.id` is the unique identifier for the book
                 checkbox.addEventListener('change', function() {
                     // Log the standard number when checkbox is selected/deselected
                     const standardNumber = checkbox.dataset.standardNumber;
@@ -695,7 +705,7 @@
                 dateAddedTd.textContent = title.date_acquired || 'N/A';
                 tr.appendChild(dateAddedTd);
 
-                // Date Added Column
+                // Status Column
                 const statusTd = document.createElement('td');
                 statusTd.textContent = title.status || 'N/A';
                 tr.appendChild(statusTd);

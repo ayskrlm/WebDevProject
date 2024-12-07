@@ -125,11 +125,15 @@
                 </div>
                 <div class="separator2"></div>
                 <div class="modal-actions">
+                    <button id="read-now-btn" style="display: none;">Read Now</button>
+
                     <button id="download-file-btn" style="display: none;">Download File</button>
                     <button id="save-favorite-btn">Save to Favorites</button>
                 </div>
             </div>
         </div>
+
+        
 
 
         <div id="book-modal-fav" class="modal-book">
@@ -291,107 +295,120 @@
         // Function to open the modal and populate it with book data
         // Function to open the modal and populate it with book data
         function openModal(book) {
-            console.log("Opening modal with book:", book); // Debug log to ensure function is called
+    console.log("Opening modal with book:", book); // Debug log to ensure function is called
 
-            const modal = document.getElementById('book-modal');
-            if (!modal) {
-                console.error("Modal element not found");
-                return;
+    const modal = document.getElementById('book-modal');
+    if (!modal) {
+        console.error("Modal element not found");
+        return;
+    }
+
+    // Modal elements
+    const modalBookTitle = document.getElementById('modal-book-title');
+    const modalBookTitle2 = document.getElementById('modal-book-title2');
+    const modalBookImage = document.getElementById('modal-book-image');
+    const modalAuthors = document.getElementById('modal-authors');
+    const modalGenre = document.getElementById('modal-genre');
+    const modalPublishedDate = document.getElementById('modal-published-date');
+    const modalPublisher = document.getElementById('modal-publisher');
+    const modalPageCount = document.getElementById('modal-page-count');
+    const modalMaterialType = document.getElementById('modal-material-type');
+    const modalDescription = document.getElementById('modal-description');
+    const downloadFileBtn = document.getElementById('download-file-btn');
+    const saveFavoriteBtn = document.getElementById('save-favorite-btn');
+    const readNowBtn = document.getElementById('read-now-btn');  // Read Now button
+    const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+    const csrfToken = getCsrfToken();
+
+    // Set modal content
+    modalBookTitle.textContent = book.name || "Unknown Title";
+    modalBookTitle2.textContent = book.name || "Unknown Title";
+    modalBookImage.src = book.image_url || fallbackImage;
+
+    const authors = Array.isArray(book.authors) ? book.authors : [book.authors || "Unknown"];
+    modalAuthors.textContent = authors.join(', ');
+
+    modalGenre.textContent = book.genre || "Unknown Genre";
+    modalPublishedDate.textContent = book.published_date || "Unknown Date";
+    modalPublisher.textContent = book.publisher || "Unknown Publisher";
+    modalPageCount.textContent = book.page_count || "Unknown";
+    modalMaterialType.textContent = book.material_type || "Unknown Type";
+    modalDescription.textContent = book.description || "No description available.";
+
+    // Configure the download button
+    if (book.attach_file) {
+        downloadFileBtn.style.display = 'inline-block';
+        downloadFileBtn.onclick = () => {
+            const link = document.createElement('a');
+            link.href = book.attach_file; // File URL
+            link.download = book.name || 'file'; // Suggested file name
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link); // Clean up after triggering download
+        };
+    } else {
+        downloadFileBtn.style.display = 'none';
+    }
+
+    // Configure the "Read Now" button
+    if (book.attach_file) {
+        readNowBtn.style.display = 'inline-block';
+        readNowBtn.onclick = () => {
+            const popup = window.open(book.attach_file, '_blank', 'width=800,height=600');
+            if (!popup) {
+                alert('Please allow popups for this site to view the PDF.');
             }
+        };
+    } else {
+        readNowBtn.style.display = 'none';
+    }
 
-            // Modal elements
-            const modalBookTitle = document.getElementById('modal-book-title');
-            const modalBookTitle2 = document.getElementById('modal-book-title2');
-            const modalBookImage = document.getElementById('modal-book-image');
-            const modalAuthors = document.getElementById('modal-authors');
-            const modalGenre = document.getElementById('modal-genre');
-            const modalPublishedDate = document.getElementById('modal-published-date');
-            const modalPublisher = document.getElementById('modal-publisher');
-            const modalPageCount = document.getElementById('modal-page-count');
-            const modalMaterialType = document.getElementById('modal-material-type');
-            const modalDescription = document.getElementById('modal-description');
-            const downloadFileBtn = document.getElementById('download-file-btn');
-            const saveFavoriteBtn = document.getElementById('save-favorite-btn');
-            const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
-            const csrfToken = getCsrfToken();
-
-
-            // Set modal content
-            modalBookTitle.textContent = book.name || "Unknown Title";
-            modalBookTitle2.textContent = book.name || "Unknown Title";
-            modalBookImage.src = book.image_url || fallbackImage;
-
-            const authors = Array.isArray(book.authors) ? book.authors : [book.authors || "Unknown"];
-            modalAuthors.textContent = authors.join(', ');
-
-            modalGenre.textContent = book.genre || "Unknown Genre";
-            modalPublishedDate.textContent = book.published_date || "Unknown Date";
-            modalPublisher.textContent = book.publisher || "Unknown Publisher";
-            modalPageCount.textContent = book.page_count || "Unknown";
-            modalMaterialType.textContent = book.material_type || "Unknown Type";
-            modalDescription.textContent = book.description || "No description available.";
-
-            // Configure the download button
-            if (book.attach_file) {
-                downloadFileBtn.style.display = 'inline-block';
-                downloadFileBtn.onclick = () => {
-                    const link = document.createElement('a');
-                    link.href = book.attach_file; // File URL
-                    link.download = book.name || 'file'; // Suggested file name
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link); // Clean up after triggering download
-                };
-            } else {
-                downloadFileBtn.style.display = 'none';
-            }
-
-            function getCsrfToken() {
-                const meta = document.querySelector('meta[name="csrf-token"]');
-                if (meta) {
-                    return meta.getAttribute('content');
-                }
-                console.error("CSRF token not found in meta tag.");
-                return null;
-            }
-
-
-            saveFavoriteBtn.onclick = () => {
-                const csrfToken = getCsrfToken();
-                if (!csrfToken) {
-                    alert("CSRF token missing. Unable to save the favorite.");
-                    return;
-                }
-
-                if (!book.standard_numbers) {
-                    alert("Book does not have a standard number.");
-                    return;
-                }
-
-                fetch('/save-favorite/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken,
-                    },
-                    body: JSON.stringify({ standard_numbers: book.standard_numbers }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Book saved to favorites!');
-                        } else {
-                            alert(`Failed to save book: ${data.error || 'Unknown error'}`);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            };
-
-            // Show the modal
-            modal.style.display = 'block';
+    function getCsrfToken() {
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        if (meta) {
+            return meta.getAttribute('content');
         }
+        console.error("CSRF token not found in meta tag.");
+        return null;
+    }
+
+    // Handle the "Save to Favorites" button
+    saveFavoriteBtn.onclick = () => {
+        const csrfToken = getCsrfToken();
+        if (!csrfToken) {
+            alert("CSRF token missing. Unable to save the favorite.");
+            return;
+        }
+
+        if (!book.standard_numbers) {
+            alert("Book does not have a standard number.");
+            return;
+        }
+
+        fetch('/save-favorite/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ standard_numbers: book.standard_numbers }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Book saved to favorites!');
+                } else {
+                    alert(`Failed to save book: ${data.error || 'Unknown error'}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
+
+    // Show the modal
+    modal.style.display = 'block';
+}
 
 
         // Function to close the modal

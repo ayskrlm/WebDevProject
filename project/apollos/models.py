@@ -84,4 +84,18 @@ class FavoriteBook(models.Model):
     def __str__(self):
         return f"{self.user.email} - {self.book.name}"
     
+    
+class TrendingBook(models.Model):
+    book = models.ForeignKey(BookTitle, on_delete=models.CASCADE, related_name="trending_books")
+    favorite_count = models.IntegerField(default=0)
+
+    def update_favorite_count(self):
+        # Count how many unique users have added this book to their favorites
+        self.favorite_count = self.book.favorited_by.values('user').distinct().count()
+        self.save()
+
+    def __str__(self):
+        return f"Trending {self.book.name}: {self.favorite_count} favorites"
+
+    
 

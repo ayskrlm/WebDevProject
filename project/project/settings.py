@@ -29,9 +29,12 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://b8b8-131-226-101-191.ngrok-free.app',  # Your ngrok URL
-    'http://b8b8-131-226-101-191.ngrok-free.app',
-    'https://187d-131-226-101-191.ngrok-free.app',  # Also allow http version if needed
+    'https://monitor-tidy-tiger.ngrok-free.app',  # Your ngrok URL
+    'http://www.apollos.online',
+    'http://apollos.online',
+    'https://www.apollos.online',
+    'https://apollos.online',
+     # Also allow http version if needed
 ]
 
 

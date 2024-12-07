@@ -82,9 +82,16 @@
 
             <div id="trending" class="content-panel">
                 <h2>Trending</h2>
+                <p>Browse books available to read online:</p>
+                <div id="book-list-trending" class="book-list-trending">
+                    <!-- Books will be dynamically inserted here by JS -->
+                </div>
                 
             </div>
             
+            
+
+
             
             
             
@@ -473,6 +480,34 @@
                             <button id="close-success-modal" class="btn">Close</button>
                         </div>
                     </div>
+
+                    <div id="book-modal-fav" class="modal-book">
+                        <div class="modal-content-book">
+                            <span id="close-modal-book-fav" class="close-book">&times;</span>
+                            <h2 id="modal-book-title-fav2"></h2>
+                            <div class="separator2"></div>
+                            <div class="modal-body">
+                                <div class="modal-image">
+                                    <img id="modal-book-image-fav" src="" alt="Book Image">
+                                </div>
+                                <div class="modal-info">
+                                    <p><strong>Title: </strong> <span id="modal-book-title-fav"></span></p>
+                                    <p><strong>Genre: </strong> <span id="modal-genre-fav"></span></p>
+                                    <p><strong>Author/s: </strong> <span id="modal-authors-fav"></span></p>
+                                    <p><strong>Publisher: </strong> <span id="modal-publisher-fav"></span></p>
+                                    <p><strong>Published Date: </strong> <span id="modal-published-date-fav"></span></p>
+                                    <p><strong>Description: </strong> <span id="modal-description-fav"></span></p>
+                                    <p><strong>Page Count: </strong> <span id="modal-page-count-fav"></span></p>
+                                    <p><strong>Material Type: </strong> <span id="modal-material-type-fav"></span></p>
+                                </div>
+                            </div>
+                            <div class="separator2"></div>
+                            <div class="modal-actions">
+                                <button id="download-file-btn-fav" style="display: none;">Download File</button>
+                                <button id="remove-favorite-btn" class="remove-btn">Remove from Favorites</button>
+                            </div>
+                        </div>
+                    </div>
                 
                 </div>
             </div>
@@ -483,14 +518,7 @@
             
             
             
-            <div id="registration" class="content-panel">
-                <h2>Registration Content</h2>
-                <p>This is where the Registration content goes.</p>
-            </div>
-            <div id="history" class="content-panel">
-                <h2>History Content</h2>
-                <p>This is where the History content goes.</p>
-            </div>
+            
         </div>
     </div>
 
@@ -830,6 +858,161 @@
         // Initially fetch titles
         fetchTitles();
 
+        fetch('/get-trending-books/')
+    .then(response => response.json())
+    .then(data => {
+        const books = data.trending_books;
+        const bookListContainer = document.getElementById('book-list-trending');
+
+        if (books.length === 0) {
+            bookListContainer.innerHTML = '<p>No trending books available at the moment.</p>';
+        } else {
+            // Filter books to show only those with a favorite count of 1 or more
+            const filteredBooks = books.filter(book => book.favorite_count >= 1);
+
+            if (filteredBooks.length === 0) {
+                bookListContainer.innerHTML = '<p>No trending books with 1 or more favorites.</p>';
+            } else {
+                // Sort the filtered books by favorite_count in descending order
+                filteredBooks.sort((a, b) => b.favorite_count - a.favorite_count);
+
+                filteredBooks.forEach(book => {
+                    const bookItem = document.createElement('div');
+                    bookItem.classList.add('book-item');
+                    bookItem.dataset.bookInfo = JSON.stringify(book);
+
+                    const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+
+                    const bookImage = document.createElement('img');
+                    bookImage.src = book.image_url || fallbackImage;
+                    bookImage.alt = book.name;
+
+                    const bookTitle = document.createElement('h3');
+                    bookTitle.textContent = book.name;
+
+                    const authors = document.createElement('p');
+                    authors.textContent = book.authors || "Unknown Author";
+
+                    const standardNumbers = document.createElement('p');
+                    standardNumbers.textContent = book.standard_numbers || "No Standard Number";
+
+                    const favoriteCount = document.createElement('p');
+                    favoriteCount.textContent = `Favorites: ${book.favorite_count}`;
+
+                    bookItem.appendChild(bookImage);
+                    bookItem.appendChild(bookTitle);
+                    bookItem.appendChild(authors);
+                    bookItem.appendChild(standardNumbers);
+                    bookItem.appendChild(favoriteCount);
+
+                    bookListContainer.appendChild(bookItem);
+
+                    bookItem.addEventListener('click', () => {
+                        openModalSaved(book);
+                    });
+                });
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching trending books:', error);
+    });
+
+
+
+
+            function openModalSaved(book) {
+        console.log("Opening modal with book:", book);
+
+        const modal = document.getElementById('book-modal-fav');
+        if (!modal) {
+            console.error("Modal element not found");
+            return;
+        }
+
+        const modalBookTitle = document.getElementById('modal-book-title-fav2');
+        const modalBookTitle2 = document.getElementById('modal-book-title-fav');
+        const modalBookImage = document.getElementById('modal-book-image-fav');
+        const modalAuthors = document.getElementById('modal-authors-fav');
+        const modalGenre = document.getElementById('modal-genre-fav');
+        const modalPublishedDate = document.getElementById('modal-published-date-fav');
+        const modalPublisher = document.getElementById('modal-publisher-fav');
+        const modalPageCount = document.getElementById('modal-page-count-fav');
+        const modalMaterialType = document.getElementById('modal-material-type-fav');
+        const modalDescription = document.getElementById('modal-description-fav');
+        const downloadFileBtn = document.getElementById('download-file-btn-fav');
+        const saveFavoriteBtn = document.getElementById('save-favorite-btn');
+        const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
+
+        modalBookTitle.textContent = book.name || "Unknown Title";
+        modalBookTitle2.textContent = book.name || "Unknown Title";
+        modalBookImage.src = book.image_url || fallbackImage;
+
+        const authors = Array.isArray(book.authors) ? book.authors : [book.authors || "Unknown"];
+        modalAuthors.textContent = authors.join(', ');
+
+        modalGenre.textContent = book.genre || "Unknown Genre";
+        modalPublishedDate.textContent = book.published_date || "Unknown Date";
+        modalPublisher.textContent = book.publisher || "Unknown Publisher";
+        modalPageCount.textContent = book.page_count || "Unknown";
+        modalMaterialType.textContent = book.material_type || "Unknown Type";
+        modalDescription.textContent = book.description || "No description available.";
+
+        if (book.attach_file) {
+            downloadFileBtn.style.display = 'inline-block';
+            downloadFileBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.href = book.attach_file;
+                link.download = book.name || 'file';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+        } else {
+            downloadFileBtn.style.display = 'none';
+        }
+
+        const removeFavoriteBtn = document.getElementById('remove-favorite-btn');
+        if (removeFavoriteBtn) {
+            removeFavoriteBtn.onclick = () => {
+                fetch('/remove-saved-book/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is available
+                    },
+                    body: JSON.stringify({ standard_numbers: book.standard_numbers })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Book removed from saved books.');
+                            modal.style.display = 'none';
+                            window.location.reload();
+                        } else {
+                            alert(data.error || 'Failed to remove the book.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while removing the book.');
+                    });
+            };
+        }
+        
+
+        modal.style.display = 'block';
+
+        document.getElementById('close-modal-book-fav').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
 
 
 
@@ -843,143 +1026,157 @@
             const standardNumberInput = document.getElementById('standard_numbers');  // Make sure this matches your HTML input ID
 
             // Event listener for form submission
-    addTitleForm.addEventListener('submit', function (e) {
-        e.preventDefault();  // Prevent the form from submitting normally
+            addTitleForm.addEventListener('submit', function (e) {
+    e.preventDefault();  // Prevent the form from submitting normally
 
-        // Collect form values
-        const bookTitle = bookTitleInput.value.trim();
-        const standardNumbers = standardNumberInput.value.trim();
-        const genre = genreInput.value.trim();
-        const attachImageFile = attachImage.files[0];
-        const attachFileFile = attachFile.files[0];
-        const subtitle = subtitleInput.value.trim();
-        const publisher = publisherInput.value.trim();
-        const publishedDate = publishedDateInput.value.trim();
-        const volume = volumeInput.value.trim();
-        const description = descriptionInput.value.trim();
-        const authors = authorsInput.value.trim();
-        const pageCount = pagecountInput.value.trim();
-        const status = statusInput.value.trim();
-        const sublocation = sublocationInput.value.trim();
-        const numOfCopies = numOfCopiesInput.value.trim();
-        const vendor = vendorInput.value.trim();
-        const startingBarcode = startingBarcodeInput.value.trim();
-        const fundingSource = fundingSourceInput.value.trim();
-        const codeNumber = codeNumberInput.value.trim();
-        const materialType = materialTypeInput.value.trim();
-        const note = noteInput.value.trim();
-        const dateAcquired = dateAcquiredInput.value.trim();
-        const purchasePrice = purchasePriceInput.value.trim();
+    // Collect form values
+    const bookTitle = bookTitleInput.value.trim();
+    const standardNumbers = standardNumberInput.value.trim();
+    const genre = genreInput.value.trim();
+    const attachImageFile = attachImage.files[0];
+    const attachFileFile = attachFile.files[0];
+    const subtitle = subtitleInput.value.trim();
+    const publisher = publisherInput.value.trim();
+    const publishedDate = publishedDateInput.value.trim();
+    const volume = volumeInput.value.trim();
+    const description = descriptionInput.value.trim();
+    const authors = authorsInput.value.trim();
+    const pageCount = pagecountInput.value.trim();
+    const status = statusInput.value.trim();
+    const sublocation = sublocationInput.value.trim();
+    const numOfCopies = numOfCopiesInput.value.trim();
+    const vendor = vendorInput.value.trim();
+    const startingBarcode = startingBarcodeInput.value.trim();
+    const fundingSource = fundingSourceInput.value.trim();
+    const codeNumber = codeNumberInput.value.trim();
+    const materialType = materialTypeInput.value.trim();
+    const note = noteInput.value.trim();
+    const dateAcquired = dateAcquiredInput.value.trim();
+    const purchasePrice = purchasePriceInput.value.trim();
 
-        if (!bookTitle) {
-            alert('Please enter a book title.');
+    if (!bookTitle) {
+        alert('Please enter a book title.');
+        return;
+    }
+
+    if (!standardNumbers) {
+        alert('Please enter a standard number.');
+        return;
+    }
+
+    // Function to generate a random 6-letter string
+    function generateRandomString(length) {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    // Modify the file name with the desired pattern
+    function modifyFileName(file) {
+        const date = new Date().toISOString().split('T')[0].replace(/-/g, '');  // Format as YYYYMMDD
+        const randomString = generateRandomString(6);  // Generate a random string
+        const fileName = file.name.replace(/\s+/g, '_');  // Replace spaces with underscores
+        const newFileName = `${fileName}#${date}${randomString}`;  // Append date and random string
+        const newFile = new File([file], newFileName, { type: file.type });
+        return newFile;
+    }
+
+    // Prepare the FormData object to send both text and files
+    const formData = new FormData();
+    formData.append('book_title', bookTitle);
+    formData.append('standard_numbers', standardNumbers);
+    formData.append('genre', genre);
+    formData.append('subtitle', subtitle);
+    formData.append('publisher', publisher);
+    formData.append('published_date', publishedDate);
+    formData.append('volume', volume);
+    formData.append('description', description);
+    formData.append('authors', authors);
+    formData.append('page_count', pageCount);
+    formData.append('status', status);
+    formData.append('sub_location', sublocation);
+    formData.append('num_of_copies', numOfCopies);
+    formData.append('vendor', vendor);
+    formData.append('starting_barcode', startingBarcode);
+    formData.append('funding_source', fundingSource);
+    formData.append('code_number', codeNumber);
+    formData.append('material_type', materialType);
+    formData.append('note', note);
+    formData.append('date_acquired', dateAcquired);
+    formData.append('purchase_price', purchasePrice);
+
+    if (attachImageFile) {
+        const modifiedImageFile = modifyFileName(attachImageFile);
+        formData.append('attach_image', modifiedImageFile);
+    }
+
+    if (attachFileFile) {
+        const modifiedFileFile = modifyFileName(attachFileFile);
+        formData.append('attach_file', modifiedFileFile);
+    }
+
+    // Assuming the table body element is the one you want to modify
+    const titleListTableBody = document.querySelector('#title-list-table tbody');  // Target the tbody of the table
+
+    fetch("{% url 'add_title' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: formData  // Send FormData directly (no need for JSON.stringify)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        return response.json();  // Parse the response as JSON if it's okay
+    })
+    .then(data => {
+        console.log('Server response:', data);  // Log the server response to debug
+
+        if (data.error) {
+            alert(data.error);
             return;
         }
 
-        if (!standardNumbers) {
-            alert('Please enter a standard number.');
-            return;
+        if (data.titles) {
+            titleListTableBody.innerHTML = '';  // Clear the current table body
+
+            // Add the updated titles to the table
+            data.titles.forEach(title => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="select-item"></td>
+                    <td><img src="${title.image_url}" alt="Image" class="title-image"></td>
+                    <td>${title.name}</td>
+                    <td>${title.standard_numbers}</td>
+                    <td>${title.authors}</td>
+                    <td>${title.date_acquired}</td>
+                `;
+                titleListTableBody.appendChild(tr);  // Append the new row to the table body
+            });
+
+            successModal.style.display = 'flex';  // Show the success modal
+            addTitleForm.reset();
+        } else if (data.success) {
+            alert("Book title added successfully!");
         }
+    })
+    .catch(error => {
+        console.error('Error adding title:', error);
 
-        // Prepare the FormData object to send both text and files
-        const formData = new FormData();
-        formData.append('book_title', bookTitle);
-        formData.append('standard_numbers', standardNumbers);
-        formData.append('genre', genre);
-        formData.append('subtitle', subtitle);
-        formData.append('publisher', publisher);
-        formData.append('published_date', publishedDate);
-        formData.append('volume', volume);
-        formData.append('description', description);
-        formData.append('authors', authors);
-        formData.append('page_count', pageCount);
-        formData.append('status', status);
-        formData.append('sub_location', sublocation);
-        formData.append('num_of_copies', numOfCopies);
-        formData.append('vendor', vendor);
-        formData.append('starting_barcode', startingBarcode);
-        formData.append('funding_source', fundingSource);
-        formData.append('code_number', codeNumber);
-        formData.append('material_type', materialType);
-        formData.append('note', note);
-        formData.append('date_acquired', dateAcquired);
-        formData.append('purchase_price', purchasePrice);
-
-        if (attachImageFile) {
-            formData.append('attach_image', attachImageFile);
+        if (error.message.includes('SyntaxError')) {
+            alert("The server returned an unexpected response. Please check if you're logged in or check the server logs.");
+        } else {
+            alert("An error occurred while adding the title.");
         }
+    });
+});
 
-        if (attachFileFile) {
-            formData.append('attach_file', attachFileFile);
-        }
-
-        // Assuming the table body element is the one you want to modify
-        const titleListTableBody = document.querySelector('#title-list-table tbody');  // Target the tbody of the table
-
-        fetch("{% url 'add_title' %}", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-            body: formData  // Send FormData directly (no need for JSON.stringify)
-        })
-        .then(response => {
-            if (!response.ok) {
-                // Check if the response status is OK
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            
-            return response.json();  // Parse the response as JSON if it's okay
-        })
-        .then(data => {
-            console.log('Server response:', data);  // Log the server response to debug
-
-            if (data.error) {
-                // Display error message if standard number already exists
-                alert(data.error);
-                return;
-            }
-
-            if (data.titles) {
-                titleListTableBody.innerHTML = '';  // Clear the current table body
-
-                // Add the updated titles to the table
-                data.titles.forEach(title => {
-                    // Create a new row and populate it with title data
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><input type="checkbox" class="select-item"></td>
-                        <td><img src="${title.image_url}" alt="Image" class="title-image"></td>
-                        <td>${title.name}</td>
-                        <td>${title.standard_numbers}</td>
-                        <td>${title.authors}</td>
-                        <td>${title.date_acquired}</td>
-                    `;
-
-                    titleListTableBody.appendChild(tr);  // Append the new row to the table body
-                });
-
-                // Show success modal or alert after adding the title
-                successModal.style.display = 'flex';  // Show the success modal
-
-                // Clear the input fields after adding the title
-                addTitleForm.reset();
-            } else if (data.success) {
-                // If titles aren't returned, show success based on success flag
-                alert("Book title added successfully!");
-            }
-        })
-        .catch(error => {
-            console.error('Error adding title:', error);
-
-            // Check if the error is due to the response being HTML (e.g., login page)
-            if (error.message.includes('SyntaxError')) {
-                alert("The server returned an unexpected response. Please check if you're logged in or check the server logs.");
-            } else {
-                alert("An error occurred while adding the title.");
-            }
-        });
-        });
 
 
             // Event listener for closing the success modal

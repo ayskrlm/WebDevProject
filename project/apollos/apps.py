@@ -1,5 +1,3 @@
-# apollos/apps.py
-
 from django.apps import AppConfig
 
 class ApollosConfig(AppConfig):
@@ -7,5 +5,5 @@ class ApollosConfig(AppConfig):
     name = 'apollos'
 
     def ready(self):
-        # Import the signals module here
-        import apollos.signals  # Ensure signals are loaded when the app is ready
+        # Import signals to ensure they are connected when the app is ready
+        import apollos.signals  # This ensures signals are connected

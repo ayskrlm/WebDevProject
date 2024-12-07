@@ -29,6 +29,7 @@ urlpatterns = [
     path('get-saved-books/', views.get_saved_books, name='get_saved_books'),
     path('remove-saved-book/', views.remove_saved_book, name='remove_saved_book'),
     path('dashboard-data/', views.dashboard, name='dashboard-data'),
+    path('get-trending-books/', views.get_trending_books, name='get_trending_books'),
     
 
 

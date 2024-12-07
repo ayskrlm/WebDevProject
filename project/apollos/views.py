@@ -18,7 +18,7 @@ from django.utils.html import strip_tags
 from django.contrib.auth import get_user_model, login
 from django.templatetags.static import static
 from email.mime.image import MIMEImage
-from .models import BookTitle, FavoriteBook
+from .models import BookTitle, FavoriteBook, TrendingBook
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
@@ -652,3 +652,27 @@ def dashboard(request):
         'book_count': book_count
     }
     return JsonResponse(data)
+
+
+def get_trending_books(request):
+    trending_books = TrendingBook.objects.all()
+    trending_books_data = [
+        {
+            'name': trending.book.name,
+            'standard_numbers': trending.book.standard_numbers,
+            'authors': trending.book.authors,
+            'publisher': trending.book.publisher,
+            'published_date': trending.book.published_date,
+            'description': trending.book.description,
+            'page_count': trending.book.page_count,
+            'status': trending.book.status,
+            'num_of_copies': trending.book.num_of_copies,
+            'image_url': trending.book.attach_image.url if trending.book.attach_image else None,
+            'file_url': trending.book.attach_file.url if trending.book.attach_file else None,
+            'favorite_count': trending.favorite_count,  # Add the favorite count to the response
+        }
+        for trending in trending_books
+    ]
+    return JsonResponse({'success': True, 'trending_books': trending_books_data})
+
+

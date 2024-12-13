@@ -63,7 +63,7 @@ class BookTitle(models.Model):
     num_of_copies = models.IntegerField(blank=True, null=True)
     starting_barcode = models.CharField(max_length=100, blank=True, null=True)
     code_number = models.CharField(max_length=100, blank=True, null=True)
-    material_type = models.CharField(max_length=100, choices=MATERIAL_TYPE_CHOICES, blank=True, null=True)
+    material_type = models.CharField(max_length=100, blank=True, null=True)
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     date_acquired = models.DateField(blank=True, null=True)
     sub_location = models.CharField(max_length=20, choices=SUB_LOCATION_CHOICES, blank=True, null=True)

@@ -156,3 +156,164 @@ button:hover {
 #forgot-password-link a:hover {
     text-decoration: underline;
 }
+
+
+@media (max-width: 768px) {
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #FDFEFF;
+        background-image: url('/static/apollos/img/Background.svg');
+        background-size: cover; /* Ensures the image covers the entire background */
+        background-repeat: no-repeat;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Logo styling */
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+    
+    .logo img {
+        height: 60px; /* Adjust the size of the logo */
+        width: auto;
+        margin-right: 10px;
+        position: absolute;
+        top: 30px;
+        left: 20px;
+    }
+    
+    .logo p {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    /* Keyframes for pop-up animation */
+    @keyframes popUp {
+        0% {
+            transform: scale(0.8); /* Start slightly smaller */
+            opacity: 0;          /* Fully transparent */
+        }
+        100% {
+            transform: scale(1); /* Full size */
+            opacity: 1;          /* Fully visible */
+        }
+    }
+    
+    /* Apply the animation to the login container */
+    .login-container {
+        background-color: #FDFEFF; /* Light color for the container */
+        padding: 20px;
+        border-radius: 7px;
+        box-shadow: 0 1px 9px rgba(0, 0, 0, 0.1); /* Shadow effect */
+        width: 70%;
+        max-width: 400px; /* Limit width for responsiveness */
+        animation: popUp 0.6s ease-out; /* Animation applied here */
+        transform-origin: center; /* Ensures scaling happens from the center */
+    }
+    
+    /* Center the form content */
+    h2 {
+        text-align: center;
+        color: #748CAC;
+        font-weight: bolder;
+        font-size: 30px;
+    }
+    
+    /* Input and button styling */
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #A8BBD3;
+        border-radius: 15px;
+        background-color: white;
+        color: #000000;
+        box-sizing: border-box; /* Includes padding in the width calculation */
+        font-size: 16px;
+    }
+    
+    /* Input box styling with placeholder */
+    input::placeholder {
+        color: #A8BBD3;
+        font-family: Poppins;
+    }
+    
+    input:focus {
+        outline: none;  /* Removes the default outline */
+        border: 1px solid #89abd4; /* Optional: custom border on focus */
+    }
+    
+    /* Error message styling */
+    #error-message {
+        color: red;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-align: center;
+    }
+    
+    /* Login button */
+    button {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 15px;
+        background-color: #82A0B9;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        font-family: Poppins;
+        font-weight: bolder;
+    }
+    
+    button:hover {
+        background-color: #333;
+    }
+    
+    /* Register link */
+    #register-link {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+        color: #748CAC;
+    }
+    
+    #register-link a {
+        color: #748CAC;
+        text-decoration: none;
+        font-weight: bolder;
+    }
+    
+    #register-link a:hover {
+        text-decoration: none;
+    }
+    
+    /* Forgot password link */
+    #forgot-password-link {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    
+    #forgot-password-link a {
+        color: #748CAC;
+        text-decoration: none;
+        font-weight: bolder;
+    }
+    
+    #forgot-password-link a:hover {
+        text-decoration: underline;
+    }
+
+
+}

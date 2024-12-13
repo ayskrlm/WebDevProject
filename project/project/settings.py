@@ -66,6 +66,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
+
+
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
@@ -154,5 +157,5 @@ AUTH_USER_MODEL = 'apollos.CustomUser'
 LOGIN_URL = '/login/'
 
 
-SESSION_COOKIE_AGE = 60 # 1 hour (change this to your desired timeout duration)
+SESSION_COOKIE_AGE = 60 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

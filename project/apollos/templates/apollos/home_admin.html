@@ -1,11 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APOLLO’S</title>
-    {% load static %}
     <link rel="stylesheet" href="{% static 'apollos/css/home_admin.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <link rel="icon" type="image/x-icon" href="{% static 'apollos/img/ApollosIcon.svg' %}">
 </head>
 <body>
@@ -34,6 +35,10 @@
                     Trending
                 </button>
                 <div class="separator"></div>
+
+                <button class="panel-item-logout" onclick="logoutUseradmin()">
+                    Logout
+                </button>
                 
             </div>
         </div>
@@ -42,11 +47,9 @@
         <div class="main-content">
             
             <header class="main-header">
-                <h1>Hellooo</h1> <!-- Main Heading -->
+                <h1>A</h1> <!-- Main Heading -->
             
                 <!-- Debugging -->
-                <p>Initials: <span id="initials">Loading...</span></p>
-                <p>Color: <span id="color">Loading...</span></p>
             
                 <!-- Circle with initials and dynamic background color -->
                 <div class="user-circle" id="user-circle" style="background-color: #748CAC;">
@@ -60,17 +63,18 @@
 
             <div id="dashboard" class="content-panel">
                 <h2>Dashboard</h2>
+
                 <div class="stats">
                     <div class="stat">
-                        <h3>Active Books</h3>
+                        <h3>Active Titles</h3>
                         <p id="active-books-count">Loading...</p>
                     </div>
                     <div class="stat">
-                        <h3>Inactive Books</h3>
+                        <h3>Inactive Titles</h3>
                         <p id="inactive-books-count">Loading...</p>
                     </div>
                     <div class="stat">
-                        <h3>Total Books</h3>
+                        <h3>Total Titles</h3>
                         <p id="book-count">Loading...</p>
                     </div>
                     <div class="stat">
@@ -78,18 +82,45 @@
                         <p id="user-count">Loading...</p>
                     </div>
                 </div>
+
+
             </div>
+            
 
             <div id="trending" class="content-panel">
                 <h2>Trending</h2>
-                <p>Browse books available to read online:</p>
                 <div id="book-list-trending" class="book-list-trending">
                     <!-- Books will be dynamically inserted here by JS -->
                 </div>
                 
             </div>
             
-            
+            <div id="book-modal-trend" class="modal-book">
+                <div class="modal-content-book">
+                    <span id="close-modal-book-trend" class="close-book">&times;</span>
+                    <h2 id="modal-book-title-trend2"></h2>
+                    <div class="separator2"></div>
+                    <div class="modal-body">
+                        <div class="modal-image">
+                            <img id="modal-book-image-trend" src="" alt="Book Image">
+                        </div>
+                        <div class="modal-info">
+                            <p><strong>Title: </strong> <span id="modal-book-title-trend"></span></p>
+                            <p><strong>Genre: </strong> <span id="modal-genre-trend"></span></p>
+                            <p><strong>Author/s: </strong> <span id="modal-authors-trend"></span></p>
+                            <p><strong>Publisher: </strong> <span id="modal-publisher-trend"></span></p>
+                            <p><strong>Published Date: </strong> <span id="modal-published-date-trend"></span></p>
+                            <p><strong>Description: </strong> <span id="modal-description-trend"></span></p>
+                            <p><strong>Page Count: </strong> <span id="modal-page-count-trend"></span></p>
+                            <p><strong>Material Type: </strong> <span id="modal-material-type-trend"></span></p>
+                        </div>
+                    </div>
+                    <div class="separator2"></div>
+                    <div class="modal-actions">
+                        <button id="download-file-btn-trend" style="display: none;">Download File</button>
+                    </div>
+                </div>
+            </div>
 
 
             
@@ -104,7 +135,7 @@
                     <button id="show-form-btn">Add New Title</button>
             
                     <!-- Form to add a book title (initially hidden) -->
-                    <form id="add-title-form" method="POST" enctype="multipart/form-data" action="{% url 'add_title' %}" style="display:none;">
+                    <form id="add-title-form" method="POST" enctype="multipart/form-data" action="{% url 'add-title' %}" style="display:none;">
                         
                         {% csrf_token %}
                         <!-- Book Title (Required) -->
@@ -210,11 +241,7 @@
                                 <input type="text" id="code_number" name="code_number">
 
                                 <label for="material_type">Material Type</label>
-                                <select id="material_type" name="material_type">
-                                    <option value="active">E-Book</option>
-                                    <option value="inactive">E-Journal</option>
-                                    <option value="inactive">Manuscript</option>
-                                </select>
+                                <input type="text" id="material_type" name="material_type">
 
 
                             </div>
@@ -309,7 +336,7 @@
 
 
                     <div id="title-list">
-                    <form id="edit-title-form" method="POST" enctype="multipart/form-data" action="{% url 'update_title' %}" style="display:none;">
+                    <form id="edit-title-form" method="POST" enctype="multipart/form-data" action="{% url 'update-title' %}" style="display:none;">
                         {% csrf_token %}
                       
                         
@@ -457,12 +484,6 @@
                     </form>
                 </div>
 
-
-
-
-
-
-
                     <!-- Modal HTML -->
                     <div id="confirmation-modal" class="modal" style="display: none;">
                         <div class="modal-content">
@@ -476,1127 +497,25 @@
                     <div id="success-modal" class="modal" style="display: none;">
                         <div class="modal-content">
                             <h4>Success!</h4>
-                            <p>The book title has been successfully added.</p>
+                            <span class="add-title-success"><p2>The book title has been successfully added.</p2></span>
+                            <div>
                             <button id="close-success-modal" class="btn">Close</button>
                         </div>
-                    </div>
-
-                    <div id="book-modal-fav" class="modal-book">
-                        <div class="modal-content-book">
-                            <span id="close-modal-book-fav" class="close-book">&times;</span>
-                            <h2 id="modal-book-title-fav2"></h2>
-                            <div class="separator2"></div>
-                            <div class="modal-body">
-                                <div class="modal-image">
-                                    <img id="modal-book-image-fav" src="" alt="Book Image">
-                                </div>
-                                <div class="modal-info">
-                                    <p><strong>Title: </strong> <span id="modal-book-title-fav"></span></p>
-                                    <p><strong>Genre: </strong> <span id="modal-genre-fav"></span></p>
-                                    <p><strong>Author/s: </strong> <span id="modal-authors-fav"></span></p>
-                                    <p><strong>Publisher: </strong> <span id="modal-publisher-fav"></span></p>
-                                    <p><strong>Published Date: </strong> <span id="modal-published-date-fav"></span></p>
-                                    <p><strong>Description: </strong> <span id="modal-description-fav"></span></p>
-                                    <p><strong>Page Count: </strong> <span id="modal-page-count-fav"></span></p>
-                                    <p><strong>Material Type: </strong> <span id="modal-material-type-fav"></span></p>
-                                </div>
-                            </div>
-                            <div class="separator2"></div>
-                            <div class="modal-actions">
-                                <button id="download-file-btn-fav" style="display: none;">Download File</button>
-                                <button id="remove-favorite-btn" class="remove-btn">Remove from Favorites</button>
-                            </div>
                         </div>
                     </div>
-                
                 </div>
             </div>
-            
-            
-            
-            
-            
-            
-            
-            
         </div>
     </div>
 
+    <script src="{% static 'apollos/js/home-admin.js' %}"></script>
     <script>
-        function togglePanelContent(contentId, clickedButton) {
-            // Hide all content panels
-            const panels = document.querySelectorAll('.content-panel');
-            panels.forEach(panel => {
-                panel.style.display = 'none';
-                // Set the background color of the user circle dynamically
-                const userCircle = document.querySelector('.user-circle');
-                const color = userCircle.getAttribute('data-color');
-                userCircle.style.backgroundColor = color;
-            });
-
-            // Show the selected content panel
-            const contentPanel = document.getElementById(contentId);
-            if (contentPanel) {
-                contentPanel.style.display = 'block';
-            }
-
-            // Remove the highlight class from all panel items
-            const panelItems = document.querySelectorAll('.panel-item');
-            panelItems.forEach(item => {
-                item.classList.remove('highlighted');
-            });
-
-            // Add the highlight class to the clicked button
-            clickedButton.classList.add('highlighted');
-        }
-
-        // Initially show the Dashboard content when the page loads
-        document.addEventListener("DOMContentLoaded", function() {
-            togglePanelContent('dashboard', document.querySelector('.panel-item'));
-        });
-
-        // Toggle the side panel visibility
-        document.getElementById('toggle-button').addEventListener('click', function() {
-            const sidePanel = document.getElementById('side-panel');
-            sidePanel.classList.toggle('open'); // Toggle the 'open' class to animate the panel
-            sidePanel.classList.toggle('collapsed'); // Toggle the 'collapsed' state
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-        // Fetch the initials and color (these can come from Django context or an API call)
-        var initials = '{{ initials }}'; // Use Django context to pass initial values
-        var color = '{{ color }}'; // Use Django context to pass initial values
-
-        // Fallback if these values are not available
-        if (!initials) {
-            initials = 'XX';  // Default initials
-        }
-        if (!color) {
-            color = '#748CAC';  // Default color
-        }
-
-        // Set the initials and color in the HTML
-        document.getElementById('initials').textContent = initials;
-        document.getElementById('color').textContent = color;
-
-        // Set the user circle background color and initials
-        var userCircle = document.getElementById('user-circle');
-        userCircle.style.backgroundColor = color;
-        
-        var userInitials = document.getElementById('user-initials');
-        userInitials.textContent = initials;
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-        const addTitleForm = document.getElementById('add-title-form');
-        const titleListTable = document.getElementById('title-list-table').getElementsByTagName('tbody')[0]; // Get tbody of the table
-        const searchInput = document.getElementById('search-input'); // Search input field
-        const bookTitleInput = document.getElementById('book-title');
-        const subtitleInput = document.getElementById('subtitle');
-        const genreInput = document.getElementById('genre');
-        const publisherInput = document.getElementById('publisher');
-        const publishedDateInput = document.getElementById('published_date');
-        const volumeInput = document.getElementById('volume');
-        const descriptionInput = document.getElementById('description');
-        const authorsInput = document.getElementById('authors');
-        const pagecountInput = document.getElementById('page_count');
-        const statusInput = document.getElementById('status');
-        const sublocationInput = document.getElementById('sub_location');
-        const numOfCopiesInput = document.getElementById('num_of_copies');
-        const vendorInput = document.getElementById('vendor');
-        const startingBarcodeInput = document.getElementById('starting_barcode');
-        const fundingSourceInput = document.getElementById('funding_source');
-        const codeNumberInput = document.getElementById('code_number');
-        const materialTypeInput = document.getElementById('material_type');
-        const noteInput = document.getElementById('note');
-        const dateAcquiredInput = document.getElementById('date_acquired');
-        const purchasePriceInput = document.getElementById('purchase_price');
-
-        const attachImage = document.getElementById('attach-image');
-        const attachFile = document.getElementById('attach-file');
-
-        const itemsPerPageSelect = document.getElementById('items-per-page');
-        const pageInfo = document.getElementById('page-info');
-        const pageNumberDisplay = document.getElementById('page-number');
-        const prevPageButton = document.getElementById('prev-page');
-        const nextPageButton = document.getElementById('next-page');
-        const selectAllCheckbox = document.getElementById('select-all');
-        const deleteButton = document.getElementById('delete-button');
-        const cancelDeleteButton = document.getElementById('cancel-delete');        
-        const confirmationModal = document.getElementById('confirmation-modal');
-        const confirmDeleteButton = document.getElementById('confirm-delete');
-
-        const successModal = document.getElementById('success-modal');
-        const closeSuccessModalButton = document.getElementById('close-success-modal');
-
-        let selectedBooks = [];    
-        let titles = [];
-        let currentPage = 1;
-        let itemsPerPage = 5;
-        let searchTerm = '';  // Store search term
-
-        // Function to fetch titles and populate the title list
-        function fetchTitles() {
-            console.log("Fetching titles..."); // Debugging line to check if the function is triggered
-            fetch("/get-titles/")  // Correct endpoint for fetching titles
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Data fetched:", data);  // Log the fetched data for debugging
-                    if (data.titles) {
-                        titles = data.titles;
-                        renderTable();
-                        updatePagination();
-                    } else {
-                        console.error('No titles found in the response');
-                    }
-                })
-                .catch(error => console.error('Error fetching titles:', error));
-        }
-
-        // Function to render the table with pagination and search
-        function renderTable() {
-            console.log("Rendering table..."); // Debugging line to ensure renderTable is being called
-
-            // Convert search term to lowercase for case-insensitive search
-            const lowerSearchTerm = searchTerm.toLowerCase();
-
-            // Filter titles based on name, author, standard number, or status
-            const filteredTitles = titles.filter(title => {
-                const nameMatch = title.name.toLowerCase().includes(lowerSearchTerm);
-                const authorMatch = title.authors && title.authors.toLowerCase().includes(lowerSearchTerm);
-                const standardNumberMatch = title.standard_numbers && title.standard_numbers.toLowerCase().includes(lowerSearchTerm);
-                const statusMatch = title.status && title.status.toLowerCase().includes(lowerSearchTerm);
-
-                return nameMatch || authorMatch || standardNumberMatch || statusMatch;
-            });
-
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredTitles.length);
-            const titlesToRender = filteredTitles.slice(startIndex, endIndex);
-
-            titleListTable.innerHTML = ''; // Clear current table body
-
-            if (titlesToRender.length === 0) {
-                titleListTable.innerHTML = '<tr><td colspan="7">No books found.</td></tr>'; // Update colspan to match number of columns
-            }
-
-            titlesToRender.forEach(title => {
-                const tr = document.createElement('tr');
-
-                // Checkbox Column
-                const checkboxTd = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.classList.add('title-checkbox');
-                checkbox.dataset.standardNumber = title.standard_numbers; // Store the standard number in data attribute
-                checkbox.value = title.id; // Assuming `title.id` is the unique identifier for the book
-                checkbox.addEventListener('change', function() {
-                    // Log the standard number when checkbox is selected/deselected
-                    const standardNumber = checkbox.dataset.standardNumber;
-                    console.log(`Checkbox for Standard Number: ${standardNumber} is ${checkbox.checked ? 'checked' : 'unchecked'}`);
-                });
-                checkboxTd.appendChild(checkbox);
-                tr.appendChild(checkboxTd);
-
-                // Image Column
-                const imgTd = document.createElement('td');
-                if (title.attach_image) {
-                    const img = document.createElement('img');
-                    img.src = title.attach_image;
-                    img.alt = title.name;
-                    img.width = 100;
-                    imgTd.appendChild(img);
-                } else {
-                    imgTd.textContent = 'No image available';
-                }
-                tr.appendChild(imgTd);
-
-                // Name Column
-                const nameTd = document.createElement('td');
-                const titleText = document.createElement('strong');
-                titleText.textContent = title.name;
-                nameTd.appendChild(titleText);
-                tr.appendChild(nameTd);
-
-                // Standard Numbers Column
-                const standardNumbersTd = document.createElement('td');
-                standardNumbersTd.textContent = title.standard_numbers || 'N/A';
-                tr.appendChild(standardNumbersTd);
-
-                // Author Column
-                const authorTd = document.createElement('td');
-                authorTd.textContent = title.authors || 'N/A';
-                tr.appendChild(authorTd);
-
-                // Date Added Column
-                const dateAddedTd = document.createElement('td');
-                dateAddedTd.textContent = title.date_acquired || 'N/A';
-                tr.appendChild(dateAddedTd);
-
-                // Status Column
-                const statusTd = document.createElement('td');
-                statusTd.textContent = title.status || 'N/A';
-                tr.appendChild(statusTd);
-
-                // Append the row to the table
-                titleListTable.appendChild(tr);
-            });
-
-            // Update page info
-            pageInfo.textContent = `Showing ${startIndex + 1} to ${endIndex} of ${filteredTitles.length} results`;
-            pageNumberDisplay.textContent = `${currentPage}`;
-        }
-
-        // Function to update pagination controls
-        function updatePagination() {
-            const filteredTitles = titles.filter(title => title.name.toLowerCase().includes(searchTerm.toLowerCase()));
-            prevPageButton.disabled = currentPage === 1;
-            nextPageButton.disabled = currentPage * itemsPerPage >= filteredTitles.length;
-        }
-
-        // Event listener for pagination buttons
-        prevPageButton.addEventListener('click', function() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderTable();
-                updatePagination();
-            }
-        });
-
-        nextPageButton.addEventListener('click', function() {
-            const filteredTitles = titles.filter(title => title.name.toLowerCase().includes(searchTerm.toLowerCase()));
-            if (currentPage * itemsPerPage < filteredTitles.length) {
-                currentPage++;
-                renderTable();
-                updatePagination();
-            }
-        });
-
-        // Event listener for items per page dropdown
-        itemsPerPageSelect.addEventListener('change', function() {
-            itemsPerPage = parseInt(itemsPerPageSelect.value, 10);
-            currentPage = 1; // Reset to the first page
-            renderTable();
-            updatePagination();
-        });
-
-        // Event listener for search input
-        searchInput.addEventListener('input', function() {
-            searchTerm = searchInput.value;  // Store the search term
-            currentPage = 1;  // Reset to the first page on search
-            renderTable();
-            updatePagination();
-        });
-
-        // Event listener for select-all checkbox
-        selectAllCheckbox.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.title-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = selectAllCheckbox.checked;
-            });
-        });
-
-        // Event listener for delete button
-        deleteButton.addEventListener('click', function () {
-            // Get selected books' standard numbers
-            selectedStandardNumbers = getSelectedStandardNumbers();
-
-            if (selectedStandardNumbers.length === 0) {
-                alert("Please select at least one book to delete.");
-                return;
-            }
-
-            // Show the confirmation modal
-            confirmationModal.style.display = 'flex';
-        });
-
-        // Event listener for confirm delete button
-        confirmDeleteButton.addEventListener('click', function () {
-            // Prepare data for the POST request
-            const requestData = { standard_numbers: selectedStandardNumbers };
-
-            // Send the request to delete books
-            fetch('/delete-titles/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value, // CSRF token if needed
-                },
-                body: JSON.stringify(requestData),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                
-                    // Optionally, update the table or reload the data
-                    fetchTitles();  // Refetch titles to update the UI
-                } else {
-                    alert(data.error || "An error occurred while deleting the books.");
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting books:', error);
-                alert('An error occurred while deleting the books.');
-            });
-
-            // Close the modal after confirming
-            confirmationModal.style.display = 'none';
-        });
-
-        // Event listener for cancel delete button
-        cancelDeleteButton.addEventListener('click', function () {
-            // Close the modal if the user cancels
-            confirmationModal.style.display = 'none';
-        });
-
-        // Helper function to get selected standard numbers from the table
-        function getSelectedStandardNumbers() {
-            const selectedCheckboxes = document.querySelectorAll('.title-checkbox:checked');
-            return Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.standardNumber);
-        }
-
-        // Initially fetch titles
-        fetchTitles();
-
-        fetch('/get-trending-books/')
-    .then(response => response.json())
-    .then(data => {
-        const books = data.trending_books;
-        const bookListContainer = document.getElementById('book-list-trending');
-
-        if (books.length === 0) {
-            bookListContainer.innerHTML = '<p>No trending books available at the moment.</p>';
-        } else {
-            // Filter books to show only those with a favorite count of 1 or more
-            const filteredBooks = books.filter(book => book.favorite_count >= 1);
-
-            if (filteredBooks.length === 0) {
-                bookListContainer.innerHTML = '<p>No trending books with 1 or more favorites.</p>';
-            } else {
-                // Sort the filtered books by favorite_count in descending order
-                filteredBooks.sort((a, b) => b.favorite_count - a.favorite_count);
-
-                filteredBooks.forEach(book => {
-                    const bookItem = document.createElement('div');
-                    bookItem.classList.add('book-item');
-                    bookItem.dataset.bookInfo = JSON.stringify(book);
-
-                    const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
-
-                    const bookImage = document.createElement('img');
-                    bookImage.src = book.image_url || fallbackImage;
-                    bookImage.alt = book.name;
-
-                    const bookTitle = document.createElement('h3');
-                    bookTitle.textContent = book.name;
-
-                    const authors = document.createElement('p');
-                    authors.textContent = book.authors || "Unknown Author";
-
-                    const standardNumbers = document.createElement('p');
-                    standardNumbers.textContent = book.standard_numbers || "No Standard Number";
-
-                    const favoriteCount = document.createElement('p');
-                    favoriteCount.textContent = `Favorites: ${book.favorite_count}`;
-
-                    bookItem.appendChild(bookImage);
-                    bookItem.appendChild(bookTitle);
-                    bookItem.appendChild(authors);
-                    bookItem.appendChild(standardNumbers);
-                    bookItem.appendChild(favoriteCount);
-
-                    bookListContainer.appendChild(bookItem);
-
-                    bookItem.addEventListener('click', () => {
-                        openModalSaved(book);
-                    });
-                });
-            }
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching trending books:', error);
-    });
-
-
-
-
-            function openModalSaved(book) {
-        console.log("Opening modal with book:", book);
-
-        const modal = document.getElementById('book-modal-fav');
-        if (!modal) {
-            console.error("Modal element not found");
-            return;
-        }
-
-        const modalBookTitle = document.getElementById('modal-book-title-fav2');
-        const modalBookTitle2 = document.getElementById('modal-book-title-fav');
-        const modalBookImage = document.getElementById('modal-book-image-fav');
-        const modalAuthors = document.getElementById('modal-authors-fav');
-        const modalGenre = document.getElementById('modal-genre-fav');
-        const modalPublishedDate = document.getElementById('modal-published-date-fav');
-        const modalPublisher = document.getElementById('modal-publisher-fav');
-        const modalPageCount = document.getElementById('modal-page-count-fav');
-        const modalMaterialType = document.getElementById('modal-material-type-fav');
-        const modalDescription = document.getElementById('modal-description-fav');
-        const downloadFileBtn = document.getElementById('download-file-btn-fav');
-        const saveFavoriteBtn = document.getElementById('save-favorite-btn');
-        const fallbackImage = "{% static 'apollos/img/NoImageAvailable.svg' %}";
-
-        modalBookTitle.textContent = book.name || "Unknown Title";
-        modalBookTitle2.textContent = book.name || "Unknown Title";
-        modalBookImage.src = book.image_url || fallbackImage;
-
-        const authors = Array.isArray(book.authors) ? book.authors : [book.authors || "Unknown"];
-        modalAuthors.textContent = authors.join(', ');
-
-        modalGenre.textContent = book.genre || "Unknown Genre";
-        modalPublishedDate.textContent = book.published_date || "Unknown Date";
-        modalPublisher.textContent = book.publisher || "Unknown Publisher";
-        modalPageCount.textContent = book.page_count || "Unknown";
-        modalMaterialType.textContent = book.material_type || "Unknown Type";
-        modalDescription.textContent = book.description || "No description available.";
-
-        if (book.attach_file) {
-            downloadFileBtn.style.display = 'inline-block';
-            downloadFileBtn.onclick = () => {
-                const link = document.createElement('a');
-                link.href = book.attach_file;
-                link.download = book.name || 'file';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
-        } else {
-            downloadFileBtn.style.display = 'none';
-        }
-
-        const removeFavoriteBtn = document.getElementById('remove-favorite-btn');
-        if (removeFavoriteBtn) {
-            removeFavoriteBtn.onclick = () => {
-                fetch('/remove-saved-book/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is available
-                    },
-                    body: JSON.stringify({ standard_numbers: book.standard_numbers })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Book removed from saved books.');
-                            modal.style.display = 'none';
-                            window.location.reload();
-                        } else {
-                            alert(data.error || 'Failed to remove the book.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while removing the book.');
-                    });
-            };
-        }
-        
-
-        modal.style.display = 'block';
-
-        document.getElementById('close-modal-book-fav').addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    }
-
-
-
-            
-
-
-
-
-
-            // Add title form submit event listener
-            const standardNumberInput = document.getElementById('standard_numbers');  // Make sure this matches your HTML input ID
-
-            // Event listener for form submission
-            addTitleForm.addEventListener('submit', function (e) {
-    e.preventDefault();  // Prevent the form from submitting normally
-
-    // Collect form values
-    const bookTitle = bookTitleInput.value.trim();
-    const standardNumbers = standardNumberInput.value.trim();
-    const genre = genreInput.value.trim();
-    const attachImageFile = attachImage.files[0];
-    const attachFileFile = attachFile.files[0];
-    const subtitle = subtitleInput.value.trim();
-    const publisher = publisherInput.value.trim();
-    const publishedDate = publishedDateInput.value.trim();
-    const volume = volumeInput.value.trim();
-    const description = descriptionInput.value.trim();
-    const authors = authorsInput.value.trim();
-    const pageCount = pagecountInput.value.trim();
-    const status = statusInput.value.trim();
-    const sublocation = sublocationInput.value.trim();
-    const numOfCopies = numOfCopiesInput.value.trim();
-    const vendor = vendorInput.value.trim();
-    const startingBarcode = startingBarcodeInput.value.trim();
-    const fundingSource = fundingSourceInput.value.trim();
-    const codeNumber = codeNumberInput.value.trim();
-    const materialType = materialTypeInput.value.trim();
-    const note = noteInput.value.trim();
-    const dateAcquired = dateAcquiredInput.value.trim();
-    const purchasePrice = purchasePriceInput.value.trim();
-
-    if (!bookTitle) {
-        alert('Please enter a book title.');
-        return;
-    }
-
-    if (!standardNumbers) {
-        alert('Please enter a standard number.');
-        return;
-    }
-
-    // Function to generate a random 6-letter string
-    function generateRandomString(length) {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return result;
-    }
-
-    // Modify the file name with the desired pattern
-    function modifyFileName(file) {
-        const date = new Date().toISOString().split('T')[0].replace(/-/g, '');  // Format as YYYYMMDD
-        const randomString = generateRandomString(6);  // Generate a random string
-        const fileName = file.name.replace(/\s+/g, '_');  // Replace spaces with underscores
-        const newFileName = `${fileName}#${date}${randomString}`;  // Append date and random string
-        const newFile = new File([file], newFileName, { type: file.type });
-        return newFile;
-    }
-
-    // Prepare the FormData object to send both text and files
-    const formData = new FormData();
-    formData.append('book_title', bookTitle);
-    formData.append('standard_numbers', standardNumbers);
-    formData.append('genre', genre);
-    formData.append('subtitle', subtitle);
-    formData.append('publisher', publisher);
-    formData.append('published_date', publishedDate);
-    formData.append('volume', volume);
-    formData.append('description', description);
-    formData.append('authors', authors);
-    formData.append('page_count', pageCount);
-    formData.append('status', status);
-    formData.append('sub_location', sublocation);
-    formData.append('num_of_copies', numOfCopies);
-    formData.append('vendor', vendor);
-    formData.append('starting_barcode', startingBarcode);
-    formData.append('funding_source', fundingSource);
-    formData.append('code_number', codeNumber);
-    formData.append('material_type', materialType);
-    formData.append('note', note);
-    formData.append('date_acquired', dateAcquired);
-    formData.append('purchase_price', purchasePrice);
-
-    if (attachImageFile) {
-        const modifiedImageFile = modifyFileName(attachImageFile);
-        formData.append('attach_image', modifiedImageFile);
-    }
-
-    if (attachFileFile) {
-        const modifiedFileFile = modifyFileName(attachFileFile);
-        formData.append('attach_file', modifiedFileFile);
-    }
-
-    // Assuming the table body element is the one you want to modify
-    const titleListTableBody = document.querySelector('#title-list-table tbody');  // Target the tbody of the table
-
-    fetch("{% url 'add_title' %}", {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
-        },
-        body: formData  // Send FormData directly (no need for JSON.stringify)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        return response.json();  // Parse the response as JSON if it's okay
-    })
-    .then(data => {
-        console.log('Server response:', data);  // Log the server response to debug
-
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-
-        if (data.titles) {
-            titleListTableBody.innerHTML = '';  // Clear the current table body
-
-            // Add the updated titles to the table
-            data.titles.forEach(title => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="checkbox" class="select-item"></td>
-                    <td><img src="${title.image_url}" alt="Image" class="title-image"></td>
-                    <td>${title.name}</td>
-                    <td>${title.standard_numbers}</td>
-                    <td>${title.authors}</td>
-                    <td>${title.date_acquired}</td>
-                `;
-                titleListTableBody.appendChild(tr);  // Append the new row to the table body
-            });
-
-            successModal.style.display = 'flex';  // Show the success modal
-            addTitleForm.reset();
-        } else if (data.success) {
-            alert("Book title added successfully!");
-        }
-    })
-    .catch(error => {
-        console.error('Error adding title:', error);
-
-        if (error.message.includes('SyntaxError')) {
-            alert("The server returned an unexpected response. Please check if you're logged in or check the server logs.");
-        } else {
-            alert("An error occurred while adding the title.");
-        }
-    });
-});
-
-
-
-            // Event listener for closing the success modal
-            closeSuccessModalButton.addEventListener('click', function () {
-                successModal.style.display = 'none'; // Close the success modal
-            });
-
-            // Event listener for the "Title" button to load titles when clicked
-            const titleButton = document.getElementById('title-button');
-            titleButton.addEventListener('click', function () {
-                fetchTitles();
-            });
-
-            // Initially populate the title list if the "Title" panel is already visible
-            const titlePanel = document.getElementById('title');
-            if (titlePanel.style.display !== 'none') {
-                fetchTitles();  // Populate titles if the panel is already open on page load
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const showFormBtn = document.getElementById('show-form-btn');
-            const addTitleForm = document.getElementById('add-title-form');
-            const titleList = document.getElementById('title-list');
-
-            // Toggle the visibility of the form and title list when the "Show Form" button is clicked
-            showFormBtn.addEventListener('click', function () {
-                if (addTitleForm.style.display === "none" || addTitleForm.style.display === "") {
-                    // Hide the title list and show the form
-                    titleList.style.display = "none";
-                    addTitleForm.style.display = "block";
-                    showFormBtn.textContent = "Show Titles";  // Change button text
-                } else {
-                    // Hide the form and show the title list
-                    addTitleForm.style.display = "none";
-                    titleList.style.display = "block";
-                    showFormBtn.textContent = "Add Title";  // Change button text
-                }
-            });
-        });
-
-        // Handle the file input for Attach File section
-        const fileInput = document.getElementById('attach-file');
-        const filePreview = document.getElementById('file-preview');
-        fileInput.addEventListener('change', function() {
-            handleFileSelect(fileInput, filePreview);
-        });
-
-        // Handle the image input for Attach Image section
-        const imageInput = document.getElementById('attach-image');
-        const imagePreview = document.getElementById('image-preview');
-        imageInput.addEventListener('change', function() {
-            handleFileSelect(imageInput, imagePreview);
-        });
-
-        // Handle the file input for Edit Attach File section
-        const editFileInput = document.getElementById('edit-attach-file');
-        const editFilePreview = document.getElementById('edit-file-preview');
-        editFileInput.addEventListener('change', function() {
-            handleFileSelect(editFileInput, editFilePreview);
-        });
-
-        // Handle the image input for Edit Attach Image section
-        const editImageInput = document.getElementById('edit-attach-image');
-        const editImagePreview = document.getElementById('edit-image-preview');
-        editImageInput.addEventListener('change', function() {
-            handleFileSelect(editImageInput, editImagePreview);
-        });
-
-        // Function to handle file/image selection and preview
-        function handleFileSelect(input, previewElement) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    previewElement.style.display = 'block';
-                    if (file.type.startsWith('image/')) {
-                        previewElement.innerHTML = `<img src="${event.target.result}" alt="${file.name}">`;
-                    } else {
-                        previewElement.innerHTML = `<p>${file.name}</p>`;
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Drag & Drop functionality for Attach File section
-        const fileUploadArea = document.getElementById('file-upload-area');
-        fileUploadArea.addEventListener('dragover', function(event) {
-            event.preventDefault();
-            fileUploadArea.classList.add('dragging');
-        });
-
-        fileUploadArea.addEventListener('dragleave', function() {
-            event.preventDefault();
-            fileUploadArea.classList.remove('dragging');
-        });
-
-        fileUploadArea.addEventListener('drop', function(event) {
-            event.preventDefault();
-            fileUploadArea.classList.remove('dragging');
-            const files = event.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                fileInput.files = files;
-                handleFileSelect(fileInput, filePreview);
-            } else {
-                alert("No files were dropped.");
-            }
-        });
-
-        // Drag & Drop functionality for Attach Image section
-        const imageUploadArea = document.getElementById('image-upload-area');
-        imageUploadArea.addEventListener('dragover', function(event) {
-            event.preventDefault();
-            imageUploadArea.classList.add('dragging');
-        });
-
-        imageUploadArea.addEventListener('dragleave', function() {
-            imageUploadArea.classList.remove('dragging');
-        });
-
-        imageUploadArea.addEventListener('drop', function(event) {
-            event.preventDefault();
-            imageUploadArea.classList.remove('dragging');
-            const file = event.dataTransfer.files[0];
-            if (file) {
-                imageInput.files = event.dataTransfer.files;
-                handleFileSelect(imageInput, imagePreview);
-            }
-        });
-
-        // Drag & Drop functionality for Edit Attach File section
-        const editFileUploadArea = document.getElementById('edit-file-upload-area');
-        editFileUploadArea.addEventListener('dragover', function(event) {
-            event.preventDefault();
-            editFileUploadArea.classList.add('dragging');
-        });
-
-        editFileUploadArea.addEventListener('dragleave', function() {
-            editFileUploadArea.classList.remove('dragging');
-        });
-
-        editFileUploadArea.addEventListener('drop', function(event) {
-            event.preventDefault();
-            editFileUploadArea.classList.remove('dragging');
-            const files = event.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                editFileInput.files = files;
-                handleFileSelect(editFileInput, editFilePreview);
-            } else {
-                alert("No files were dropped.");
-            }
-        });
-
-        // Drag & Drop functionality for Edit Attach Image section
-        const editImageUploadArea = document.getElementById('edit-image-upload-area');
-        editImageUploadArea.addEventListener('dragover', function(event) {
-            event.preventDefault();
-            editImageUploadArea.classList.add('dragging');
-        });
-
-        editImageUploadArea.addEventListener('dragleave', function() {
-            editImageUploadArea.classList.remove('dragging');
-        });
-
-        editImageUploadArea.addEventListener('drop', function(event) {
-            event.preventDefault();
-            editImageUploadArea.classList.remove('dragging');
-            const file = event.dataTransfer.files[0];
-            if (file) {
-                editImageInput.files = event.dataTransfer.files;
-                handleFileSelect(editImageInput, editImagePreview);
-            }
-        });
-
-        // Click the browse link to open the file input for Attach File section
-        document.querySelectorAll('.browse-link').forEach(function(link) {
-            link.addEventListener('click', function() {
-                const input = link.closest('.file-upload-area').querySelector('input[type="file"]');
-                input.click();
-            });
-        });
-
-
-        function cancelAddTitle() {
-        // Hide the form and show the title list
-        document.getElementById('add-title-form').style.display = 'none';
-        document.getElementById('title-list').style.display = 'block';
-        }
-        
-        // Example function to show the add-title form
-        function showAddTitleForm() {
-            document.getElementById('add-title-form').style.display = 'block';
-            document.getElementById('title-list').style.display = 'none';
-        }
-
-
-        document.getElementById('show-form-btn').addEventListener('click', function() {
-            // Get the current text content of the h2
-            const currentText = document.querySelector('#title h2').textContent;
-            
-            // Toggle between "Title List" and "Show List"
-            if (currentText === 'Title List') {
-                document.querySelector('#title h2').textContent = 'Add Title';
-            } else {
-                document.querySelector('#title h2').textContent = 'Title List';
-            }
-        });
-
-
-
-
-
-        // Event listener for the edit button
-        document.getElementById('edit-button').addEventListener('click', function() {
-            const selectedStandardNumbers = getSelectedStandardNumbers(); // Implement this as needed
-            if (selectedStandardNumbers.length !== 1) {
-                alert("Please select exactly one book to edit.");
-                return;
-            }
-
-            // Fetch the book data
-            fetch(`/get-book-data/${selectedStandardNumbers[0]}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const bookData = data.book;
-
-                        // Check if each element exists before trying to set its value
-                        console.log("Populating form fields with book data...");
-                        
-                        // Pre-fill the form fields with the book data
-                        const bookTitleField = document.getElementById('edit-book-title');
-                        const standardNumbersField = document.getElementById('edit-standard-numbers');
-                        if (bookTitleField && standardNumbersField) {
-                            bookTitleField.value = bookData.name;
-                            standardNumbersField.value = bookData.standard_numbers;
-                        } else {
-                            console.error("Book Title or Standard Numbers field not found.");
-                        }
-
-                        const subtitleField = document.getElementById('edit-subtitle');
-                        if (subtitleField) subtitleField.value = bookData.subtitle || '';
-                        
-                        const genreField = document.getElementById('edit-genre');
-                        if (genreField) genreField.value = bookData.genre || '';
-                        
-                        const volumeField = document.getElementById('edit-volume');
-                        if (volumeField) volumeField.value = bookData.volume || '';
-                        
-                        const authorsField = document.getElementById('edit-authors');
-                        if (authorsField) authorsField.value = bookData.authors || '';
-
-                        const publisherField = document.getElementById('edit-publisher');
-                        if (publisherField) publisherField.value = bookData.publisher || '';
-
-                        const publishedDateField = document.getElementById('edit-published_date');
-                        if (publishedDateField) publishedDateField.value = bookData.published_date || '';
-                        
-                        const descriptionField = document.getElementById('edit-description');
-                        if (descriptionField) descriptionField.value = bookData.description || '';
-                        
-                        const pageCountField = document.getElementById('edit-page_count');
-                        if (pageCountField) pageCountField.value = bookData.page_count || '';
-
-                        const statusField = document.getElementById('edit-status');
-                        if (statusField) statusField.value = bookData.status || 'active';
-
-                        const subLocationField = document.getElementById('edit-sub_location');
-                        if (subLocationField) subLocationField.value = bookData.sub_location || 'circulation';
-
-                        const numCopiesField = document.getElementById('edit-num_of_copies');
-                        if (numCopiesField) numCopiesField.value = bookData.num_of_copies || '';
-                        
-                        const vendorField = document.getElementById('edit-vendor');
-                        if (vendorField) vendorField.value = bookData.vendor || '';
-                        
-                        const startingBarcodeField = document.getElementById('edit-starting_barcode');
-                        if (startingBarcodeField) startingBarcodeField.value = bookData.starting_barcode || '';
-                        
-                        const fundingSourceField = document.getElementById('edit-funding_source');
-                        if (fundingSourceField) fundingSourceField.value = bookData.funding_source || '';
-                        
-                        const codeNumberField = document.getElementById('edit-code_number');
-                        if (codeNumberField) codeNumberField.value = bookData.code_number || '';
-                        
-                        const materialTypeField = document.getElementById('edit-material_type');
-                        if (materialTypeField) materialTypeField.value = bookData.material_type || '';
-                        
-                        const noteField = document.getElementById('edit-note');
-                        if (noteField) noteField.value = bookData.note || '';
-                        
-                        const dateAcquiredField = document.getElementById('edit-date_acquired');
-                        if (dateAcquiredField) dateAcquiredField.value = bookData.date_acquired || '';
-                        
-                        const purchasePriceField = document.getElementById('edit-purchase_price');
-                        if (purchasePriceField) purchasePriceField.value = bookData.purchase_price || '';
-
-                        // Show the form
-                        document.getElementById('edit-title-form').style.display = 'block';
-                    } else {
-                        alert("Error fetching book data.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching book data:', error);
-                    alert('An error occurred while fetching the book data.');
-                });
-        });
-
-        document.getElementById('edit-title-form').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the form from submitting normally
-
-            const formData = new FormData(this);
-
-            fetch("{% url 'update_title' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,  // CSRF Token from form
-                },
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    alert("Book title updated successfully!");
-
-                    // Call the function to update the table row with new data
-                    updateTableRow(data.updatedTitle);  // Make sure this function is defined
-                } else {
-                    alert("Book title updated successfully!");
-                }
-            })
-            .catch(error => {
-                console.error('Error updating title:', error);
-                alert("An error occurred while updating the title.");
-            });
-        });
-
-        async function fetchDashboardData() {
-                try {
-                    const response = await fetch('/dashboard-data/');
-                    const data = await response.json();
-
-                    // Update the HTML elements with the data from the API
-                    document.getElementById('active-books-count').textContent = data.active_books_count;
-                    document.getElementById('inactive-books-count').textContent = data.inactive_books_count;
-                    document.getElementById('user-count').textContent = data.user_count;
-                    document.getElementById('book-count').textContent = data.book_count;
-                } catch (error) {
-                    console.error('Error fetching dashboard data:', error);
-                }
-            }
-
-            // Call the function to fetch the data when the page is loaded
-            window.onload = fetchDashboardData;
-
-
-        // Function to close the modal
-        function cancelEditTitle() {
-            // Get the form element by ID
-            var form = document.getElementById('edit-title-form');
-            
-            // Hide the form by setting its display style to 'none'
-            form.style.display = 'none';
-        }
-
-
-        // Helper function to get selected standard numbers from the table
-        function getSelectedStandardNumbers() {
-            const selectedCheckboxes = document.querySelectorAll('.title-checkbox:checked');
-            return Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.standardNumber);
-        }
-
-
-
-        // Update the table row (implement this function to reflect changes in the UI)
-        function updateTableRow(updatedTitle) {
-            const row = document.querySelector(`tr[data-standard-number="${updatedTitle.standard_numbers}"]`);
-            if (row) {
-                row.querySelector('.title').textContent = updatedTitle.name;
-                row.querySelector('.standard-number').textContent = updatedTitle.standard_numbers;
-                row.querySelector('.subtitle').textContent = updatedTitle.subtitle;
-                row.querySelector('.genre').textContent = updatedTitle.genre;
-                row.querySelector('.volume').textContent = updatedTitle.volume;
-                row.querySelector('.authors').textContent = updatedTitle.authors;
-                row.querySelector('.publisher').textContent = updatedTitle.publisher;
-                row.querySelector('.published_date').textContent = updatedTitle.published_date;
-                row.querySelector('.description').textContent = updatedTitle.description;
-                row.querySelector('.page_count').textContent = updatedTitle.page_count;
-                row.querySelector('.status').textContent = updatedTitle.status;
-                row.querySelector('.sub_location').textContent = updatedTitle.sub_location;
-                row.querySelector('.num_of_copies').textContent = updatedTitle.num_of_copies;
-                row.querySelector('.vendor').textContent = updatedTitle.vendor;
-                row.querySelector('.starting_barcode').textContent = updatedTitle.starting_barcode;
-                row.querySelector('.funding_source').textContent = updatedTitle.funding_source;
-                row.querySelector('.code_number').textContent = updatedTitle.code_number;
-                row.querySelector('.material_type').textContent = updatedTitle.material_type;
-                row.querySelector('.note').textContent = updatedTitle.note;
-                row.querySelector('.date_acquired').textContent = updatedTitle.date_acquired;
-                row.querySelector('.purchase_price').textContent = updatedTitle.purchase_price;
-
-                // Update other fields as necessary
-            }
-
-            // Initially fetch titles
-        fetchTitles();
-        }
-
-        // Function to fetch the data from the Django view and update the dashboard
-        
-
-
+        const gettitles = "{% url 'get-titles' %}";
+        const deletetitle = "{% url 'delete-titles' %}";
+        const gettrending = "{% url 'get-trending-books' %}";
+        const addtitle = "{% url 'add-title' %}";
+        const updatetitle = "{% url 'update-title' %}";
     </script>
+
 </body>
 </html>

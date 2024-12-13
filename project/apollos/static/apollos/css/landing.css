@@ -358,6 +358,29 @@ body::-webkit-scrollbar {
     footer {
         position: relative;
     }
+
+
+    .landing-button-container .login-btn {
+        background-color: #758CAC;
+        border: 2px solid #758CAC;
+        width: 69px;
+        color: white;
+        border-radius: 6px;
+        font-family: Poppins;
+        font-size: 14px;
+    }
+
+    .landing-button-container .register-btn {
+        background-color: #ffffff;
+        border: 2px solid #758CAC;
+    
+        width: 88px;
+        color: rgb(0, 0, 0);
+        border-radius: 6px;
+        font-family: Poppins;
+        font-size: 14px;
+    }
+
 }
 
 @media only screen and (max-width: 480px) {

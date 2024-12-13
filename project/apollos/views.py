@@ -1,6 +1,7 @@
 import random
 import string
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.conf import settings
@@ -25,6 +26,7 @@ from django.core.files.storage import FileSystemStorage
 import os
 import json
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 
 # Email configuration from settings
 # Make sure you define these in your settings.py
@@ -120,6 +122,7 @@ def register_view(request):
     return render(request, 'apollos/register.html')
 
 # View to send OTP (AJAX request)
+
 def send_otp_view(request):
     if request.method == "POST":
         import json
@@ -666,6 +669,8 @@ def get_trending_books(request):
             'description': trending.book.description,
             'page_count': trending.book.page_count,
             'status': trending.book.status,
+            'material_type': trending.book.material_type,
+            'genre': trending.book.genre,
             'num_of_copies': trending.book.num_of_copies,
             'image_url': trending.book.attach_image.url if trending.book.attach_image else None,
             'file_url': trending.book.attach_file.url if trending.book.attach_file else None,
@@ -675,4 +680,6 @@ def get_trending_books(request):
     ]
     return JsonResponse({'success': True, 'trending_books': trending_books_data})
 
-
+def logout_view(request):
+    logout(request)
+    return redirect('login')  # Redirect to login page after logout

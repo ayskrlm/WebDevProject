@@ -17,19 +17,20 @@ urlpatterns = [
     path('password-reset/', views.password_reset_request, name='password_reset_request'),
     path('password-reset/confirm/', views.password_reset_confirm, name='password_reset_confirm'),
     path('home_admin/', views.home_admin_view, name='home_admin'),
-    path('add_title/', views.add_title, name='add_title'),
+    path('add-title/', views.add_title, name='add-title'),
     path('home_admin/', views.home_admin, name='home_admin'),
-    path('get-titles/', views.get_book_titles, name='get_book_titles'),
-    path('delete-titles/', views.delete_titles, name='delete_titles'),
-    path('update_title/', views.update_title, name='update_title'),
-    path('get-book-data/<str:standard_number>/', views.get_book_data, name='get_book_data'),
+    path('get-titles/', views.get_book_titles, name='get-titles'),
+    path('delete-titles/', views.delete_titles, name='delete-titles'),
+    path('update-title/', views.update_title, name='update-title'),
+    path('get-book-data/<str:standard_number>/', views.get_book_data, name='get-book-data'),
     path('dashboard/', dashboard_user, name='dashboard'),  # URL for FBV
     path('api/active-books/', views.read_online, name='api/active-books/'),
     path('save-favorite/', views.save_favorite, name='save_favorite'),
     path('get-saved-books/', views.get_saved_books, name='get_saved_books'),
     path('remove-saved-book/', views.remove_saved_book, name='remove_saved_book'),
     path('dashboard-data/', views.dashboard, name='dashboard-data'),
-    path('get-trending-books/', views.get_trending_books, name='get_trending_books'),
+    path('get-trending-books/', views.get_trending_books, name='get-trending-books'),
+    path('logout/', views.logout_view, name='logout'),
     
 
 

@@ -374,6 +374,7 @@ def add_title(request):
         # For GET requests, pass the list of titles to the template
         titles = BookTitle.objects.all()
         return render(request, 'apollos/home_admin.html', {'titles': titles})
+    
 def delete_titles(request):
     if request.method == "POST":
         try:

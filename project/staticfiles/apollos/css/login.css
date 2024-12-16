@@ -1,5 +1,3 @@
-
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 /* Overall styling for the page */
@@ -17,7 +15,6 @@ body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
 }
-
 
 /* Logo styling */
 .logo {
@@ -40,8 +37,6 @@ body {
     color: #333;
 }
 
-
-
 /* Keyframes for pop-up animation */
 @keyframes popUp {
     0% {
@@ -54,8 +49,8 @@ body {
     }
 }
 
-/* Apply the animation to the registration container */
-.register-container {
+/* Apply the animation to the login container */
+.login-container {
     background-color: #FDFEFF; /* Light color for the container */
     padding: 20px;
     border-radius: 7px;
@@ -66,14 +61,12 @@ body {
     transform-origin: center; /* Ensures scaling happens from the center */
 }
 
-
 /* Center the form content */
 h2 {
     text-align: center;
     color: #748CAC;
     font-weight: bolder;
     font-size: 30px;
-    
 }
 
 /* Input and button styling */
@@ -95,7 +88,6 @@ input::placeholder {
     font-family: Poppins;
 }
 
-
 input:focus {
     outline: none;  /* Removes the default outline */
     border: 1px solid #89abd4; /* Optional: custom border on focus */
@@ -109,7 +101,7 @@ input:focus {
     text-align: center;
 }
 
-/* OTP and Register buttons */
+/* Login button */
 button {
     width: 100%;
     padding: 10px;
@@ -128,8 +120,8 @@ button:hover {
     background-color: #333;
 }
 
-/* Already have an account? Login link */
-#login-link {
+/* Register link */
+#register-link {
     display: block;
     text-align: center;
     margin-top: 10px;
@@ -137,24 +129,36 @@ button:hover {
     color: #748CAC;
 }
 
-#login-link a {
+#register-link a {
     color: #748CAC;
     text-decoration: none;
     font-weight: bolder;
 }
 
-#login-link a:hover {
+#register-link a:hover {
     text-decoration: none;
 }
 
+/* Forgot password link */
+#forgot-password-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+#forgot-password-link a {
+    color: #748CAC;
+    text-decoration: none;
+    font-weight: bolder;
+}
+
+#forgot-password-link a:hover {
+    text-decoration: underline;
+}
 
 
 @media (max-width: 768px) {
-
-
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-    /* Overall styling for the page */
     body {
         font-family: Arial, sans-serif;
         background-color: #FDFEFF;
@@ -169,7 +173,6 @@ button:hover {
         margin: 0;
         font-family: 'Poppins', sans-serif;
     }
-    
     
     /* Logo styling */
     .logo {
@@ -192,8 +195,6 @@ button:hover {
         color: #333;
     }
     
-    
-    
     /* Keyframes for pop-up animation */
     @keyframes popUp {
         0% {
@@ -206,8 +207,8 @@ button:hover {
         }
     }
     
-    /* Apply the animation to the registration container */
-    .register-container {
+    /* Apply the animation to the login container */
+    .login-container {
         background-color: #FDFEFF; /* Light color for the container */
         padding: 20px;
         border-radius: 7px;
@@ -218,14 +219,12 @@ button:hover {
         transform-origin: center; /* Ensures scaling happens from the center */
     }
     
-    
     /* Center the form content */
     h2 {
         text-align: center;
         color: #748CAC;
         font-weight: bolder;
         font-size: 30px;
-        
     }
     
     /* Input and button styling */
@@ -238,7 +237,7 @@ button:hover {
         background-color: white;
         color: #000000;
         box-sizing: border-box; /* Includes padding in the width calculation */
-        font-size: 12px;
+        font-size: 16px;
     }
     
     /* Input box styling with placeholder */
@@ -246,7 +245,6 @@ button:hover {
         color: #A8BBD3;
         font-family: Poppins;
     }
-    
     
     input:focus {
         outline: none;  /* Removes the default outline */
@@ -261,7 +259,7 @@ button:hover {
         text-align: center;
     }
     
-    /* OTP and Register buttons */
+    /* Login button */
     button {
         width: 100%;
         padding: 10px;
@@ -280,8 +278,8 @@ button:hover {
         background-color: #333;
     }
     
-    /* Already have an account? Login link */
-    #login-link {
+    /* Register link */
+    #register-link {
         display: block;
         text-align: center;
         margin-top: 10px;
@@ -289,16 +287,33 @@ button:hover {
         color: #748CAC;
     }
     
-    #login-link a {
+    #register-link a {
         color: #748CAC;
         text-decoration: none;
         font-weight: bolder;
     }
     
-    #login-link a:hover {
+    #register-link a:hover {
         text-decoration: none;
     }
     
+    /* Forgot password link */
+    #forgot-password-link {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    
+    #forgot-password-link a {
+        color: #748CAC;
+        text-decoration: none;
+        font-weight: bolder;
+    }
+    
+    #forgot-password-link a:hover {
+        text-decoration: underline;
+    }
 
 
 }
